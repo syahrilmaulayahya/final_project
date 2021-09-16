@@ -8,6 +8,13 @@ func main() {
 	fmt.Println("Hello World A Pertama")
 
 	fmt.Println("Hello World B Pertama")
+
 	fmt.Println("Hello World A Bukan Stash")
+
+	fmt.Println("Hello World A Stash")
+	fmt.Println("Hello World A Stash")
+	fmt.Println("Hello World A Stash")
+	fmt.Println("Hello World A Stash")
+	fmt.Println("Hello World A Stash")
 
 }
