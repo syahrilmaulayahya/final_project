@@ -32,9 +32,6 @@ func main() {
 
 func GetUserController(c echo.Context) error {
 	user := Users{1, "puppy", "https://id.depositphotos.com/stock-photos/puppy.html", +62856414411299, "puppy@gmail.com", "pupy", "male", "2000-3-1"}
-	return c.JSON(http.StatusOK, BaseResponse{
-		Code:    http.StatusOK,
-		Message: "Success",
-		Data:    user,
-	})
+	response := BaseResponse{http.StatusOK, "Success", user}
+	return c.JSON(http.StatusOK, response)
 }
