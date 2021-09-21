@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"final_project/models/products"
 	"final_project/models/users"
 
 	"gorm.io/driver/mysql"
@@ -21,5 +22,5 @@ func InitDB() {
 }
 
 func Migration() {
-	DB.AutoMigrate(&users.User{})
+	DB.AutoMigrate(&users.User{}, &products.Product{}, &products.Review_Rating{}, &products.Product_description{})
 }
