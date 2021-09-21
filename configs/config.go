@@ -22,5 +22,6 @@ func InitDB() {
 }
 
 func Migration() {
-	DB.AutoMigrate(&users.User{}, &products.Product{}, &products.Review_Rating{}, &products.Product_description{}, &products.Product_type{})
+	DB.AutoMigrate(&users.User{}, &products.Product{}, &products.Review_Rating{}, &products.Product_description{}, &products.Product_type{},
+		&products.Size{})
 }
