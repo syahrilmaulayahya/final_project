@@ -11,8 +11,8 @@ import (
 )
 
 func GetProductController(c echo.Context) error {
-	var products products.Product
-	result := configs.DB.Preload("Review_Rating").Preload("Product_description").Find(&products)
+	products := []products.Product{}
+	result := configs.DB.Preload("Review_Rating").Preload("Product_description").Preload("Product_type").Find(&products)
 
 	if result.Error != nil {
 		if result.Error != gorm.ErrRecordNotFound {
@@ -26,7 +26,7 @@ func GetProductController(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, responses.BaseResponse{
 		Code:    http.StatusOK,
-		Message: "Berhasil mendapatkan data produk user dari DB",
+		Message: "Berhasil mendapatkan data produk  dari DB",
 		Data:    products,
 	})
 

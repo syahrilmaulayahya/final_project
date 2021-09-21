@@ -7,7 +7,7 @@ import (
 )
 
 type Product struct {
-	Id                  uint                `json:"id"`
+	ID                  uint                `json:"id"`
 	Code                string              `json:"code"`
 	Name                string              `json:"name"`
 	Stock               uint                `json:"stock"`
@@ -16,12 +16,13 @@ type Product struct {
 	CreatedAt           time.Time           `json:"createdAt"`
 	UpdatedAt           time.Time           `json:"updatedAt"`
 	DeletedAt           gorm.DeletedAt      `gorm:"index" json:"deletedAt"`
+	Product_type        Product_type        `json:"product_type"`
 	Product_description Product_description `json:"product_desription"`
 	Review_Rating       []Review_Rating     `json:"review_rating"`
 }
 
 type Review_Rating struct {
-	Id        uint           `json:"id"`
+	ID        uint           `json:"id"`
 	Review    string         `json:"review"`
 	Rating    float32        `json:"rating"`
 	ProductID uint           `json:"productid"`
@@ -36,4 +37,13 @@ type Product_description struct {
 	CreatedAt   time.Time      `json:"createdAt"`
 	UpdatedAt   time.Time      `json:"updatedAt"`
 	DeletedAt   gorm.DeletedAt `gorm:"index" json:"deletedAt"`
+}
+
+type Product_type struct {
+	Id        uint           `json:"id"`
+	ProductID uint           `json:"productid"`
+	Name      string         `json:"name"`
+	CreatedAt time.Time      `json:"createdAt"`
+	UpdatedAt time.Time      `json:"updatedAt"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"deletedAt"`
 }
