@@ -59,10 +59,18 @@ func UserRegisterController(c echo.Context) error {
 			Data:    nil,
 		})
 	}
+	var err error
 	userDB.Username = userRegister.Username
 	userDB.Name = userRegister.Name
 	userDB.Email = userRegister.Email
-	userDB.Password = userRegister.Password
+	userDB.Password, err = helpers.Hash(userRegister.Password)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.BaseResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "Error ketika hashing password",
+			Data:    nil,
+		})
+	}
 
 	result := configs.DB.Create(&userDB)
 
