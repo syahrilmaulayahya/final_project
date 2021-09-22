@@ -3,22 +3,18 @@ package user_controller
 import (
 	"errors"
 	"final_project/configs"
+	helpers "final_project/helper"
+	"final_project/middlewares"
 
 	"final_project/models/responses"
 	"final_project/models/users"
 	"net/http"
-	"net/mail"
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
 
-// source https://stackoverflow.com/questions/66624011/how-to-validate-an-email-address-in-go
-func CheckEmail(email string) bool {
-	_, err := mail.ParseAddress(email)
-	return err == nil
-}
 func UserRegisterController(c echo.Context) error {
 	var userRegister users.UserRegister
 	var userDB users.User
@@ -50,13 +46,18 @@ func UserRegisterController(c echo.Context) error {
 			Message: "Password masih kosong",
 			Data:    nil,
 		})
-	case CheckEmail(userRegister.Email) == false:
+	case !helpers.CheckEmail(userRegister.Email):
 		return c.JSON(http.StatusBadRequest, responses.BaseResponse{
 			Code:    http.StatusBadRequest,
 			Message: "Format Email salah",
 			Data:    nil,
 		})
-
+	case !helpers.CheckPassword(userRegister.Password):
+		return c.JSON(http.StatusBadRequest, responses.BaseResponse{
+			Code:    http.StatusBadRequest,
+			Message: "Password harus lebih dari 7 karakter, mengandung angka dan huruf kapital",
+			Data:    nil,
+		})
 	}
 	userDB.Username = userRegister.Username
 	userDB.Name = userRegister.Name
@@ -65,7 +66,6 @@ func UserRegisterController(c echo.Context) error {
 
 	result := configs.DB.Create(&userDB)
 
-	//source https://github.com/go-gorm/gorm/issues/4037
 	var mysqlErr *mysql.MySQLError
 	if result.Error != nil {
 		if errors.As(result.Error, &mysqlErr) && mysqlErr.Number == 1062 {
@@ -91,6 +91,63 @@ func UserRegisterController(c echo.Context) error {
 	})
 }
 
+func LoginController(c echo.Context) error {
+
+	userLogin := users.UserLogin{}
+	c.Bind(&userLogin)
+
+	user := users.User{}
+
+	result := configs.DB.First(&user, "email = ? AND password = ?",
+		userLogin.Email, userLogin.Password)
+
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return c.JSON(http.StatusForbidden, responses.BaseResponse{
+				Code:    http.StatusForbidden,
+				Message: "email atau password salah",
+				Data:    nil,
+			})
+		} else {
+			return c.JSON(http.StatusInternalServerError, responses.BaseResponse{
+				Code:    http.StatusInternalServerError,
+				Message: "Ada keselahan di server",
+				Data:    nil,
+			})
+		}
+
+	}
+
+	token, err := middlewares.GenerateTokenJWT(int(user.ID))
+
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, responses.BaseResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "Ada keselahan di server",
+			Data:    nil,
+		})
+	}
+
+	userResponse := users.UserResponse{
+		ID:           user.ID,
+		Username:     user.Username,
+		Picture_url:  user.Picture_url,
+		Phone_number: user.Phone_number,
+		Email:        user.Email,
+		Token:        token,
+		Name:         user.Name,
+		Gender:       user.Gender,
+		Dob:          user.Dob,
+		CreatedAt:    user.CreatedAt,
+		UpdatedAt:    user.UpdatedAt,
+		DeletedAt:    user.DeletedAt,
+	}
+	return c.JSON(http.StatusOK, responses.BaseResponse{
+		Code:    http.StatusOK,
+		Message: "Berhasil Login",
+		Data:    userResponse,
+	})
+}
 func GetUserController(c echo.Context) error {
 	users := []users.User{}
 	result := configs.DB.Find(&users)

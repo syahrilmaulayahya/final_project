@@ -6,13 +6,13 @@ import (
 	"gorm.io/gorm"
 )
 
-type User struct {
-	ID           int            `gorm:"primaryKey" json:"id"`
+type UserResponse struct {
+	ID           int            `json:"id"`
 	Username     string         `json:"username"`
 	Picture_url  string         `json:"picture_url"`
 	Phone_number int            `json:"phone_number"`
-	Email        string         `gorm:"unique" json:"email"`
-	Password     string         `json:"password"`
+	Email        string         `json:"email"`
+	Token        string         `json:"token"`
 	Name         string         `json:"name"`
 	Gender       string         `json:"gender"`
 	Dob          string         `json:"dob"`
