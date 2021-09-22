@@ -11,8 +11,8 @@ import (
 )
 
 func GetProductController(c echo.Context) error {
-	var products products.Product
-	result := configs.DB.Preload("Review_Rating").Preload("Product_description").Find(&products)
+	products := []products.Product{}
+	result := configs.DB.Preload("Review_Rating").Preload("Product_description").Preload("Product_type").Preload("Size").Find(&products)
 
 	if result.Error != nil {
 		if result.Error != gorm.ErrRecordNotFound {
