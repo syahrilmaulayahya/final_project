@@ -3,6 +3,8 @@ package helpers
 import (
 	"net/mail"
 	"unicode"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 func CheckEmail(email string) bool {
@@ -31,4 +33,9 @@ func CheckPassword(s string) bool {
 		}
 	}
 	return hasMinLen && hasUpper && hasLower && hasNumber
+}
+
+func Hash(secret string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(secret), bcrypt.MinCost)
+	return string(bytes), err
 }
