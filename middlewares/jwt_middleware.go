@@ -5,16 +5,19 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/labstack/echo/v4"
 )
 
 type JwtCustomClaims struct {
-	ID int `json:"id"`
+	ID   int    `json:"id"`
+	Name string `json:"name"`
 	jwt.StandardClaims
 }
 
-func GenerateTokenJWT(id int) (string, error) {
+func GenerateTokenJWT(id int, name string) (string, error) {
 	claims := JwtCustomClaims{
 		id,
+		name,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Local().Add(time.Hour * 1).Unix(),
 		},
@@ -27,4 +30,17 @@ func GenerateTokenJWT(id int) (string, error) {
 	}
 
 	return jwtToken, nil
+}
+
+func GetClaimsUserId(c echo.Context) int {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	id := claims["id"].(float64)
+	return int(id)
+}
+func GetClaimsName(c echo.Context) string {
+	user := c.Get("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	name := claims["name"].(string)
+	return name
 }

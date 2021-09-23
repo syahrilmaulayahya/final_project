@@ -126,7 +126,7 @@ func LoginController(c echo.Context) error {
 
 	}
 
-	token, err := middlewares.GenerateTokenJWT(int(user.ID))
+	token, err := middlewares.GenerateTokenJWT(user.ID, user.Name)
 
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, responses.BaseResponse{
@@ -174,6 +174,29 @@ func GetUserController(c echo.Context) error {
 		Code:    http.StatusOK,
 		Message: "Berhasil mendapatkan data user dari DB",
 		Data:    users,
+	})
+
+}
+
+func GetAddressController(c echo.Context) error {
+	address := []users.Address{}
+	result := configs.DB.Find(&address, "user_id = ?", middlewares.GetClaimsUserId(c))
+
+	if result.Error != nil {
+		if result.Error != gorm.ErrRecordNotFound {
+			return c.JSON(http.StatusInternalServerError, responses.BaseResponse{
+				Code:    http.StatusInternalServerError,
+				Message: "Error ketika mendapatkan data alamat dari DB",
+				Data:    nil,
+			})
+
+		}
+	}
+	return c.JSON(http.StatusOK, responses.AddressResponse{
+		Code:    http.StatusOK,
+		Message: "Berhasil mendapatkan data alamat dari DB",
+		Name:    middlewares.GetClaimsName(c),
+		Data:    address,
 	})
 
 }

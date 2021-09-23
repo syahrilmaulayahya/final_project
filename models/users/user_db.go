@@ -19,4 +19,15 @@ type User struct {
 	CreatedAt    time.Time      `json:"createdAt"`
 	UpdatedAt    time.Time      `json:"updatedAt"`
 	DeletedAt    gorm.DeletedAt `gorm:"index" json:"deletedAt"`
+	Address      []Address      `json:"-"`
+}
+
+type Address struct {
+	ID           int       `gorm:"primary key" json:"id"`
+	UserID       int       `json:"userid"`
+	Address      string    `json:"address"`
+	Phone_number int       `json:"phone_number"`
+	CreatedAt    time.Time `json:"createAt"`
+	UpdatedAt    time.Time `json:"UpdatedAt"`
+	DeletedAt    time.Time `json:"DeletedAt"`
 }
