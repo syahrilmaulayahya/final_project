@@ -9,3 +9,6 @@ type NewUserData struct {
 	Name         string `json:"name"`
 	Dob          string `json:"dob"`
 }
+
+type NewAddressData struct {
+}
