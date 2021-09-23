@@ -192,11 +192,33 @@ func GetAddressController(c echo.Context) error {
 
 		}
 	}
-	return c.JSON(http.StatusOK, responses.AddressResponse{
+	return c.JSON(http.StatusOK, responses.TrackResponse{
 		Code:    http.StatusOK,
 		Message: "Berhasil mendapatkan data alamat dari DB",
 		Name:    middlewares.GetClaimsName(c),
 		Data:    address,
 	})
 
+}
+
+func UpdateController(c echo.Context) error {
+	var newData = users.NewUserData{}
+	c.Bind(&newData)
+
+	var userModel helpers.UserModel
+	user, _ := userModel.FindById(middlewares.GetClaimsUserId(c))
+	user.Username = newData.Username
+	result := userModel.Update(&user)
+	if result != nil {
+		return c.JSON(http.StatusInternalServerError, responses.BaseResponse{
+			Code:    http.StatusInternalServerError,
+			Message: "gagal update",
+			Data:    nil,
+		})
+	}
+	return c.JSON(http.StatusOK, responses.BaseResponse{
+		Code:    http.StatusOK,
+		Message: "berhasil update",
+		Data:    user,
+	})
 }
