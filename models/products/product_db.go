@@ -8,9 +8,9 @@ import (
 
 type Product struct {
 	ID                  uint                `gorm:"primaryKey" json:"id"`
-	Code                string              `json:"code"`
+	Code                string              `gorm:"unique" json:"code"`
 	Name                string              `json:"name"`
-	Stock               uint                `json:"stock"`
+	Total_Stock         uint                `json:"total_stock"`
 	Price               float64             `json:"price"`
 	Picture_url         string              `json:"picture_url"`
 	CreatedAt           time.Time           `json:"createdAt"`

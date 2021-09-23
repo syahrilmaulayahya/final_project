@@ -20,14 +20,11 @@ func NewRoute() *echo.Echo {
 	ev1.POST("/registers", user_controller.UserRegisterController)
 	ev1.POST("/login", user_controller.LoginController)
 	ev1.GET("/address", user_controller.GetAddressController, jwt)
-<<<<<<< HEAD
-	ev1.PUT("/updates", user_controller.UpdateUserController, jwt)
-
-=======
 	ev1.PUT("/updates", user_controller.UpdateController, jwt)
->>>>>>> 5f5c3be9eae6d8f922f4f646e1df46afbb05a6ac
+
 	ev2 := e.Group("api/v1/products")
 	ev2.GET("", product_controller.GetProductController)
+	ev2.POST("/uploads", product_controller.UploadProductController)
 
 	return e
 }
