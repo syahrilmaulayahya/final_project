@@ -59,18 +59,11 @@ func UserRegisterController(c echo.Context) error {
 			Data:    nil,
 		})
 	}
-	var err error
+
 	userDB.Username = userRegister.Username
 	userDB.Name = userRegister.Name
 	userDB.Email = userRegister.Email
-	userDB.Password, err = helpers.Hash(userRegister.Password)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, responses.BaseResponse{
-			Code:    http.StatusInternalServerError,
-			Message: "Error ketika hashing password",
-			Data:    nil,
-		})
-	}
+	userDB.Password = userRegister.Password
 
 	result := configs.DB.Create(&userDB)
 
@@ -201,13 +194,14 @@ func GetAddressController(c echo.Context) error {
 
 }
 
-func UpdateUserController(c echo.Context) error {
-	var user helpers.UserUpdate
-	var data users.UserUpdate
-	c.Bind(&data)
-	userUpdate, _ := user.FindById(middlewares.GetClaimsUserId(c))
-	userUpdate.Username = data.Username
-	result := user.Update(&userUpdate)
+func UpdateController(c echo.Context) error {
+	var newData = users.NewUserData{}
+	c.Bind(&newData)
+
+	var userModel helpers.UserModel
+	user, _ := userModel.FindById(middlewares.GetClaimsUserId(c))
+	user.Username = newData.Username
+	result := userModel.Update(&user)
 	if result != nil {
 		return c.JSON(http.StatusInternalServerError, responses.BaseResponse{
 			Code:    http.StatusInternalServerError,
@@ -217,7 +211,7 @@ func UpdateUserController(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, responses.BaseResponse{
 		Code:    http.StatusOK,
-		Message: "Berhasil update user",
-		Data:    userUpdate,
+		Message: "berhasil update",
+		Data:    user,
 	})
 }
