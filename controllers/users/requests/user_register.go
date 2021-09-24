@@ -1,6 +1,9 @@
 package requests
 
-import "final_project/business/users"
+import (
+	"final_project/business/users"
+	"time"
+)
 
 type UserRegister struct {
 	Name         string `json:"name"`
@@ -11,6 +14,11 @@ type UserRegister struct {
 	Dob          string `json:"dob"`
 }
 
+func parseDob(dob string) time.Time {
+	parsedDob, _ := time.Parse("2006-Jan-02", dob)
+	return parsedDob
+}
+
 func (user *UserRegister) ToDomain() users.Domain {
 	return users.Domain{
 		Name:         user.Name,
@@ -18,6 +26,6 @@ func (user *UserRegister) ToDomain() users.Domain {
 		Password:     user.Password,
 		Phone_number: user.Phone_number,
 		Gender:       user.Gender,
-		Dob:          user.Dob,
+		Dob:          parseDob(user.Dob),
 	}
 }

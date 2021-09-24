@@ -33,7 +33,7 @@ func (uc *UserUseCase) Register(ctx context.Context, domain Domain) (Domain, err
 	if domain.Gender == "" {
 		return Domain{}, errors.New("gender empty")
 	}
-	if domain.Dob == "" {
+	if domain.Dob.IsZero() {
 		return Domain{}, errors.New("date of birtday empty")
 	}
 	user, err := uc.Repo.Register(ctx, domain)

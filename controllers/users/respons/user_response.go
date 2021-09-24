@@ -12,7 +12,7 @@ type UserResponse struct {
 	Token        string    `json:"token"`
 	Phone_number int       `json:"phone_number"`
 	Gender       string    `json:"gender"`
-	Dob          string    `json:"dob"`
+	Dob          time.Time `json:"dob"`
 	Picture_url  string    `json:"picture_url"`
 	CreatedAt    time.Time `json:"createdAt"`
 	UpdatedAt    time.Time `json:"updatedAt"`

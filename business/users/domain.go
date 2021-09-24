@@ -13,7 +13,7 @@ type Domain struct {
 	Token        string
 	Phone_number int
 	Gender       string
-	Dob          string
+	Dob          time.Time
 	Picture_url  string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
