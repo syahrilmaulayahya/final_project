@@ -29,7 +29,7 @@ func init() {
 }
 
 func dbMigrate(db *gorm.DB) {
-	db.AutoMigrate(&_userDB.User{}, &_productDB.Product{})
+	db.AutoMigrate(&_userDB.User{}, &_productDB.Product{}, &_productDB.Review_Rating{}, &_productDB.Product_description{}, &_productDB.Product_type{}, &_productDB.Size{})
 }
 
 func main() {

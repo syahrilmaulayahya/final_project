@@ -2,6 +2,7 @@ package products
 
 import (
 	"context"
+	"errors"
 	"time"
 )
 
@@ -23,4 +24,15 @@ func (uc *ProductUseCase) Get(ctx context.Context) ([]ProductDomain, error) {
 		return nil, err
 	}
 	return product, nil
+}
+
+func (uc *ProductUseCase) UploadType(ctx context.Context, domain Product_typeDomain) (Product_typeDomain, error) {
+	if domain.Name == "" {
+		return Product_typeDomain{}, errors.New("product type name empty")
+	}
+	productType, err := uc.Repo.UploadType(ctx, domain)
+	if err != nil {
+		return Product_typeDomain{}, err
+	}
+	return productType, nil
 }

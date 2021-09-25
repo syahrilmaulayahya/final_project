@@ -3,6 +3,7 @@ package products
 import (
 	"final_project/business/products"
 	"final_project/controllers"
+	"final_project/controllers/products/requests"
 	"final_project/controllers/products/respons"
 	"net/http"
 
@@ -26,4 +27,17 @@ func (ProductController ProductController) Get(c echo.Context) error {
 		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.ListFromDomain(product))
+}
+
+func (ProductController ProductController) UploadType(c echo.Context) error {
+	newProductType := requests.ProductTypeUpload{}
+	c.Bind(&newProductType)
+	uploadType := newProductType.ToDomain()
+	ctx := c.Request().Context()
+	productType, err := ProductController.ProductUseCase.UploadType(ctx, uploadType)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponse(c, respons.TypeFromDomain(productType))
+
 }

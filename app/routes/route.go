@@ -17,4 +17,5 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	e.GET("users/details", cl.UserController.Details)
 	e.POST("users/registers", cl.UserController.Register)
 	e.GET("products", cl.ProductController.Get)
+	e.POST("products/uploadtype", cl.ProductController.UploadType)
 }
