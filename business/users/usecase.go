@@ -64,8 +64,8 @@ func (uc *UserUseCase) Login(ctx context.Context, email, password string) (Domai
 	return user, nil
 }
 
-func (uc *UserUseCase) Get(ctx context.Context) (Domain, error) {
-	user, err := uc.Repo.Get(ctx)
+func (uc *UserUseCase) Details(ctx context.Context) (Domain, error) {
+	user, err := uc.Repo.Details(ctx)
 	if err != nil {
 		return Domain{}, err
 	}

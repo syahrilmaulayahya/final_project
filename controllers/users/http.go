@@ -45,9 +45,9 @@ func (usercontroller UserController) Login(c echo.Context) error {
 	return controllers.NewSuccessResponse(c, respons.FromDomain(user))
 }
 
-func (UserController UserController) Get(c echo.Context) error {
+func (UserController UserController) Details(c echo.Context) error {
 	ctx := c.Request().Context()
-	user, err := UserController.UserUseCase.Get(ctx)
+	user, err := UserController.UserUseCase.Details(ctx)
 	if err != nil {
 		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
 	}

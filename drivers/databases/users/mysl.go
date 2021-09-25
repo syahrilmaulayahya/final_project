@@ -43,7 +43,7 @@ func (rep MysqlUserRepository) Login(ctx context.Context, email, password string
 	return user.ToDomain(), nil
 }
 
-func (rep MysqlUserRepository) Get(ctx context.Context) (users.Domain, error) {
+func (rep MysqlUserRepository) Details(ctx context.Context) (users.Domain, error) {
 	var user User
 	result := rep.Conn.Find(&user)
 	if result.Error != nil {
