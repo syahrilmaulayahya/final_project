@@ -63,17 +63,7 @@ type UploadProductResponse struct {
 	CreatedAt      time.Time `json:"createdAt"`
 	UpdatedAt      time.Time `json:"updatedAt"`
 }
-type UpdateStockResponse struct {
-	Stock int `json:"stock"`
-}
 
-func UpdateStockFromDomain(domain products.SizeDomain) UpdateStockResponse {
-	return UpdateStockResponse{
-
-		Stock: domain.Stock,
-	}
-
-}
 func ProductFromDomain(domain products.ProductDomain) UploadProductResponse {
 	return UploadProductResponse{
 		ID:             domain.ID,

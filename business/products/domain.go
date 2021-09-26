@@ -53,17 +53,29 @@ type SizeDomain struct {
 
 type UseCase interface {
 	Get(ctx context.Context) ([]ProductDomain, error)
-	UploadType(ctx context.Context, domain Product_typeDomain) (Product_typeDomain, error)
 	UploadProduct(ctx context.Context, productdomain ProductDomain) (ProductDomain, error)
-	UploadSize(ctx context.Context, sizedomain SizeDomain) (SizeDomain, error)
-	UpdateStock(ctx context.Context, stock, id int) (SizeDomain, error)
 	UpdateProduct(ctx context.Context, domain ProductDomain, id int) (ProductDomain, error)
+
+	UploadType(ctx context.Context, domain Product_typeDomain) (Product_typeDomain, error)
+
+	UploadSize(ctx context.Context, sizedomain SizeDomain) (SizeDomain, error)
+	UpdateSize(ctx context.Context, sizedomain SizeDomain, id int) (SizeDomain, error)
+	UpdateStock(ctx context.Context, stock, id int) (SizeDomain, error)
+
+	UploadDescription(ctx context.Context, domain Product_descriptionDomain) (Product_descriptionDomain, error)
+	UpdateDescription(ctx context.Context, domain Product_descriptionDomain, id int) (Product_descriptionDomain, error)
 }
 type Repository interface {
 	Get(ctx context.Context) ([]ProductDomain, error)
-	UploadType(ctx context.Context, domain Product_typeDomain) (Product_typeDomain, error)
 	UploadProduct(ctx context.Context, productdomain ProductDomain) (ProductDomain, error)
-	UploadSize(ctx context.Context, sizedomain SizeDomain) (SizeDomain, error)
-	UpdateStock(ctx context.Context, stock, id int) (SizeDomain, error)
 	UpdateProduct(ctx context.Context, domain ProductDomain, id int) (ProductDomain, error)
+	//Kurang product details
+	UploadType(ctx context.Context, domain Product_typeDomain) (Product_typeDomain, error)
+
+	UploadSize(ctx context.Context, sizedomain SizeDomain) (SizeDomain, error)
+	UpdateSize(ctx context.Context, sizedomain SizeDomain, id int) (SizeDomain, error)
+	UpdateStock(ctx context.Context, stock, id int) (SizeDomain, error)
+
+	UploadDescription(ctx context.Context, domain Product_descriptionDomain) (Product_descriptionDomain, error)
+	UpdateDescription(ctx context.Context, domain Product_descriptionDomain, id int) (Product_descriptionDomain, error)
 }

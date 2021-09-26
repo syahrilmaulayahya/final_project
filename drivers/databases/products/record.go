@@ -3,8 +3,6 @@ package product
 import (
 	"final_project/business/products"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type Product struct {
@@ -30,11 +28,10 @@ type Review_Rating struct {
 	ProductID int
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	DeletedAt gorm.DeletedAt `gorm:"index"`
 }
 
 type Product_description struct {
-	ProductID   int `gorm:"primaryKey"`
+	ProductID   int `gorm:"primaryKey, unique"`
 	Description string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
@@ -71,19 +68,6 @@ func (product *Product) ToDomain() products.ProductDomain {
 		Product_description: product.Product_description,
 		Review_Rating:       product.Review_Rating,
 		Size:                product.Size,
-	}
-}
-
-func FromDomain(domain products.ProductDomain) Product {
-	return Product{
-		ID:             domain.ID,
-		Code:           domain.Code,
-		Name:           domain.Name,
-		Price:          domain.Price,
-		Picture_url:    domain.Picture_url,
-		CreatedAt:      domain.CreatedAt,
-		UpdatedAt:      domain.UpdatedAt,
-		Product_typeID: domain.Product_typeID,
 	}
 }
 
