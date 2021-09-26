@@ -53,13 +53,56 @@ type SizeResponse struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
+type UploadProductResponse struct {
+	ID             int       `json:"id"`
+	Code           string    `json:"code"`
+	Name           string    `json:"name"`
+	Price          float64   `json:"price"`
+	Picture_url    string    `json:"picture_url"`
+	Product_typeID int       `json:"product_typeid"`
+	CreatedAt      time.Time `json:"createdAt"`
+	UpdatedAt      time.Time `json:"updatedAt"`
+}
+type UpdateStockResponse struct {
+	Stock int `json:"stock"`
+}
+
+func UpdateStockFromDomain(domain products.SizeDomain) UpdateStockResponse {
+	return UpdateStockResponse{
+
+		Stock: domain.Stock,
+	}
+
+}
+func ProductFromDomain(domain products.ProductDomain) UploadProductResponse {
+	return UploadProductResponse{
+		ID:             domain.ID,
+		Code:           domain.Code,
+		Name:           domain.Name,
+		Price:          domain.Price,
+		Picture_url:    domain.Picture_url,
+		Product_typeID: domain.Product_typeID,
+		CreatedAt:      domain.CreatedAt,
+		UpdatedAt:      domain.UpdatedAt,
+	}
+}
+func SizeFromDomain(domain products.SizeDomain) SizeResponse {
+	return SizeResponse{
+		ID:        domain.ID,
+		ProductID: domain.ProductID,
+		Type:      domain.Type,
+		Size:      domain.Size,
+		Stock:     domain.Stock,
+		CreatedAt: domain.CreatedAt,
+		UpdatedAt: domain.UpdatedAt,
+	}
+}
 
 func FromDomain(domain products.ProductDomain) ProductResponse {
 	return ProductResponse{
 		ID:                  domain.ID,
 		Code:                domain.Code,
 		Name:                domain.Name,
-		Total_Stock:         domain.Total_Stock,
 		Price:               domain.Price,
 		Picture_url:         domain.Picture_url,
 		CreatedAt:           domain.CreatedAt,

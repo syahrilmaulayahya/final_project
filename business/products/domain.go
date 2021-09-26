@@ -9,7 +9,6 @@ type ProductDomain struct {
 	ID                  int
 	Code                string
 	Name                string
-	Total_Stock         int
 	Price               float64
 	Picture_url         string
 	CreatedAt           time.Time
@@ -30,7 +29,7 @@ type Review_RatingDomain struct {
 }
 
 type Product_descriptionDomain struct {
-	ProductID   uint
+	ProductID   int
 	Description string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
@@ -47,7 +46,7 @@ type SizeDomain struct {
 	ProductID int
 	Type      string
 	Size      string
-	Stock     uint
+	Stock     int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -55,8 +54,16 @@ type SizeDomain struct {
 type UseCase interface {
 	Get(ctx context.Context) ([]ProductDomain, error)
 	UploadType(ctx context.Context, domain Product_typeDomain) (Product_typeDomain, error)
+	UploadProduct(ctx context.Context, productdomain ProductDomain) (ProductDomain, error)
+	UploadSize(ctx context.Context, sizedomain SizeDomain) (SizeDomain, error)
+	UpdateStock(ctx context.Context, stock, id int) (SizeDomain, error)
+	UpdateProduct(ctx context.Context, domain ProductDomain, id int) (ProductDomain, error)
 }
 type Repository interface {
 	Get(ctx context.Context) ([]ProductDomain, error)
 	UploadType(ctx context.Context, domain Product_typeDomain) (Product_typeDomain, error)
+	UploadProduct(ctx context.Context, productdomain ProductDomain) (ProductDomain, error)
+	UploadSize(ctx context.Context, sizedomain SizeDomain) (SizeDomain, error)
+	UpdateStock(ctx context.Context, stock, id int) (SizeDomain, error)
+	UpdateProduct(ctx context.Context, domain ProductDomain, id int) (ProductDomain, error)
 }

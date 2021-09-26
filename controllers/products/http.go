@@ -41,3 +41,51 @@ func (ProductController ProductController) UploadType(c echo.Context) error {
 	return controllers.NewSuccessResponse(c, respons.TypeFromDomain(productType))
 
 }
+
+func (ProductController ProductController) UploadProduct(c echo.Context) error {
+	newProduct := requests.ProductUpload{}
+	c.Bind(&newProduct)
+	uploadProduct := newProduct.ToDomain()
+	ctx := c.Request().Context()
+	product, err := ProductController.ProductUseCase.UploadProduct(ctx, uploadProduct)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponse(c, respons.ProductFromDomain(product))
+}
+
+func (ProductController ProductController) UploadSize(c echo.Context) error {
+	newSize := requests.SizeUpload{}
+	c.Bind(&newSize)
+	uploadSize := newSize.ToDomain()
+	ctx := c.Request().Context()
+	size, err := ProductController.ProductUseCase.UploadSize(ctx, uploadSize)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponse(c, respons.SizeFromDomain(size))
+}
+
+func (ProductController ProductController) UpdateStock(c echo.Context) error {
+	newStock := requests.StockUpload{}
+	c.Bind(&newStock)
+	updateStock := newStock.ToDomain()
+	ctx := c.Request().Context()
+	stock, err := ProductController.ProductUseCase.UpdateStock(ctx, updateStock.Stock, updateStock.ID)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponse(c, respons.SizeFromDomain(stock))
+}
+
+func (ProductController ProductController) UpdateProduct(c echo.Context) error {
+	newproduct := requests.ProductUpdate{}
+	c.Bind(&newproduct)
+	updateProduct := newproduct.ToDomain()
+	ctx := c.Request().Context()
+	product, err := ProductController.ProductUseCase.UpdateProduct(ctx, updateProduct, newproduct.ID)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponse(c, respons.ProductFromDomain(product))
+}

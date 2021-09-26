@@ -19,22 +19,22 @@ func NewUserUseCase(repo Repository, timeOut time.Duration) UseCase {
 }
 func (uc *UserUseCase) Register(ctx context.Context, domain Domain) (Domain, error) {
 	if domain.Name == "" {
-		return Domain{}, errors.New("name empty")
+		return Domain{}, errors.New("name is empty")
 	}
 	if domain.Email == "" {
-		return Domain{}, errors.New("email empty")
+		return Domain{}, errors.New("email is empty")
 	}
 	if domain.Password == "" {
-		return Domain{}, errors.New("password empty")
+		return Domain{}, errors.New("password is empty")
 	}
 	if domain.Phone_number == 0 {
-		return Domain{}, errors.New("phone number empty")
+		return Domain{}, errors.New("phone number is empty")
 	}
 	if domain.Gender == "" {
-		return Domain{}, errors.New("gender empty")
+		return Domain{}, errors.New("gender is empty")
 	}
 	if domain.Dob.IsZero() {
-		return Domain{}, errors.New("date of birtday empty")
+		return Domain{}, errors.New("date of birtday is empty")
 	}
 	user, err := uc.Repo.Register(ctx, domain)
 	// user.Name = domain.Name
@@ -50,11 +50,11 @@ func (uc *UserUseCase) Register(ctx context.Context, domain Domain) (Domain, err
 }
 func (uc *UserUseCase) Login(ctx context.Context, email, password string) (Domain, error) {
 	if email == "" {
-		return Domain{}, errors.New("email empty")
+		return Domain{}, errors.New("email is empty")
 	}
 
 	if password == "" {
-		return Domain{}, errors.New("password empty")
+		return Domain{}, errors.New("password is empty")
 	}
 	user, err := uc.Repo.Login(ctx, email, password)
 

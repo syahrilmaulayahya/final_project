@@ -41,8 +41,8 @@ type Product_description struct {
 }
 
 type Product_type struct {
-	ID        int `gorm:"primaryKey"`
-	Name      string
+	ID        int    `gorm:"primaryKey"`
+	Name      string `gorm:"unique"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -62,7 +62,6 @@ func (product *Product) ToDomain() products.ProductDomain {
 		ID:                  product.ID,
 		Code:                product.Code,
 		Name:                product.Name,
-		Total_Stock:         product.Total_Stock,
 		Price:               product.Price,
 		Picture_url:         product.Picture_url,
 		CreatedAt:           product.CreatedAt,
@@ -80,7 +79,6 @@ func FromDomain(domain products.ProductDomain) Product {
 		ID:             domain.ID,
 		Code:           domain.Code,
 		Name:           domain.Name,
-		Total_Stock:    domain.Total_Stock,
 		Price:          domain.Price,
 		Picture_url:    domain.Picture_url,
 		CreatedAt:      domain.CreatedAt,
