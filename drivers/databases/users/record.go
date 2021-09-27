@@ -48,3 +48,25 @@ func FromDomain(domain users.Domain) User {
 		UpdatedAt:    domain.UpdatedAt,
 	}
 }
+
+type Review_Rating struct {
+	ID        int `gorm:"primaryKey"`
+	Review    string
+	Rating    float32
+	UserID    int
+	ProductID int `gorm:"unique"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+func (review *Review_Rating) ToDomain() users.Review_RatingDomain {
+	return users.Review_RatingDomain{
+		ID:        review.ID,
+		Review:    review.Review,
+		Rating:    review.Rating,
+		UserID:    review.UserID,
+		ProductID: review.ProductID,
+		CreatedAt: review.CreatedAt,
+		UpdatedAt: review.UpdatedAt,
+	}
+}

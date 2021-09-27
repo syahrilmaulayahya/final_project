@@ -25,6 +25,7 @@ type Review_RatingResponse struct {
 	ID        int       `json:"id"`
 	Review    string    `json:"review"`
 	Rating    float32   `json:"rating"`
+	UserID    int       `json:"userid"`
 	ProductID uint      `json:"productid"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`

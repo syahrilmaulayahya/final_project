@@ -1,6 +1,7 @@
 package users
 
 import (
+	"final_project/app/middleware"
 	"final_project/business/users"
 	"final_project/controllers"
 	"final_project/controllers/users/requests"
@@ -26,6 +27,7 @@ func (usercontroller UserController) Register(c echo.Context) error {
 	register := userRegister.ToDomain()
 	ctx := c.Request().Context()
 	user, err := usercontroller.UserUseCase.Register(ctx, register)
+
 	if err != nil {
 		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
 	}
@@ -37,6 +39,7 @@ func (usercontroller UserController) Login(c echo.Context) error {
 	c.Bind(&userLogin)
 
 	ctx := c.Request().Context()
+
 	user, err := usercontroller.UserUseCase.Login(ctx, userLogin.Email, userLogin.Password)
 
 	if err != nil {
@@ -47,9 +50,21 @@ func (usercontroller UserController) Login(c echo.Context) error {
 
 func (UserController UserController) Details(c echo.Context) error {
 	ctx := c.Request().Context()
-	user, err := UserController.UserUseCase.Details(ctx)
+	user, err := UserController.UserUseCase.Details(ctx, middleware.GetClaimsUserId(c))
 	if err != nil {
 		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.FromDomain(user))
+}
+
+func (UserController UserController) UploadReview(c echo.Context) error {
+	userReview := requests.UserReview{}
+	c.Bind(&userReview)
+	newReview := userReview.ToDomain()
+	ctx := c.Request().Context()
+	review, err := UserController.UserUseCase.UploadReview(ctx, newReview, middleware.GetClaimsUserId(c))
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponse(c, respons.ReviewFromDomain(review))
 }

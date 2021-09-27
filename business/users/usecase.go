@@ -3,18 +3,21 @@ package users
 import (
 	"context"
 	"errors"
+	"final_project/app/middleware"
 	"time"
 )
 
 type UserUseCase struct {
 	Repo           Repository
 	ContextTimeout time.Duration
+	JwtToken       middleware.ConfigJWT
 }
 
-func NewUserUseCase(repo Repository, timeOut time.Duration) UseCase {
+func NewUserUseCase(repo Repository, timeOut time.Duration, token middleware.ConfigJWT) UseCase {
 	return &UserUseCase{
 		Repo:           repo,
 		ContextTimeout: timeOut,
+		JwtToken:       token,
 	}
 }
 func (uc *UserUseCase) Register(ctx context.Context, domain Domain) (Domain, error) {
@@ -57,17 +60,32 @@ func (uc *UserUseCase) Login(ctx context.Context, email, password string) (Domai
 		return Domain{}, errors.New("password is empty")
 	}
 	user, err := uc.Repo.Login(ctx, email, password)
-
+	var fail error
+	user.Token, fail = uc.JwtToken.GenerateToken(user.ID)
+	if fail != nil {
+		return Domain{}, fail
+	}
 	if err != nil {
 		return Domain{}, err
 	}
 	return user, nil
 }
 
-func (uc *UserUseCase) Details(ctx context.Context) (Domain, error) {
-	user, err := uc.Repo.Details(ctx)
+func (uc *UserUseCase) Details(ctx context.Context, id int) (Domain, error) {
+	user, err := uc.Repo.Details(ctx, id)
 	if err != nil {
 		return Domain{}, err
 	}
 	return user, nil
+}
+
+func (uc *UserUseCase) UploadReview(ctx context.Context, domain Review_RatingDomain, id int) (Review_RatingDomain, error) {
+	if domain.Rating > 5 || domain.Rating < 0 {
+		return Review_RatingDomain{}, errors.New("invalid rating")
+	}
+	review, err := uc.Repo.UploadReview(ctx, domain, id)
+	if err != nil {
+		return Review_RatingDomain{}, err
+	}
+	return review, nil
 }

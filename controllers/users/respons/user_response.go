@@ -32,3 +32,25 @@ func FromDomain(domain users.Domain) UserResponse {
 		UpdatedAt:    domain.UpdatedAt,
 	}
 }
+
+type Review_RatingResponse struct {
+	ID        int       `json:"id"`
+	Review    string    `json:"review"`
+	Rating    float32   `json:"rating"`
+	UserID    int       `json:"userid"`
+	ProductID int       `json:"productid"`
+	CreatedAt time.Time `json:"createdat"`
+	UpdatedAt time.Time `json:"updateat"`
+}
+
+func ReviewFromDomain(domain users.Review_RatingDomain) Review_RatingResponse {
+	return Review_RatingResponse{
+		ID:        domain.ID,
+		Review:    domain.Review,
+		Rating:    domain.Rating,
+		UserID:    domain.ID,
+		ProductID: domain.ProductID,
+		CreatedAt: domain.CreatedAt,
+		UpdatedAt: domain.UpdatedAt,
+	}
+}

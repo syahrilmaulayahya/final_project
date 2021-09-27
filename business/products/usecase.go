@@ -131,5 +131,6 @@ func (uc *ProductUseCase) UpdateDescription(ctx context.Context, domain Product_
 	if err != nil {
 		return Product_descriptionDomain{}, nil
 	}
+
 	return updateDescription, nil
 }

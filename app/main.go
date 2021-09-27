@@ -1,6 +1,7 @@
 package main
 
 import (
+	_middleware "final_project/app/middleware"
 	"final_project/app/routes"
 	_productUseCase "final_project/business/products"
 	_userUseCase "final_project/business/users"
@@ -29,7 +30,7 @@ func init() {
 }
 
 func dbMigrate(db *gorm.DB) {
-	db.AutoMigrate(&_userDB.User{}, &_productDB.Product{}, &_productDB.Review_Rating{}, &_productDB.Product_description{}, &_productDB.Product_type{}, &_productDB.Size{})
+	db.AutoMigrate(&_userDB.User{}, &_productDB.Product{}, &_userDB.Review_Rating{}, &_productDB.Product_description{}, &_productDB.Product_type{}, &_productDB.Size{})
 }
 
 func main() {
@@ -40,14 +41,17 @@ func main() {
 		DB_Port:     viper.GetString(`database.port`),
 		DB_Database: viper.GetString(`database.name`),
 	}
-
+	configJWT := _middleware.ConfigJWT{
+		SecretJWT:       viper.GetString(`jwt.secret`),
+		ExpiresDuration: viper.GetInt(`jwt.expired`),
+	}
 	Conn := configDB.InitialDB()
 
 	dbMigrate(Conn)
 	e := echo.New()
 	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
 	userRepository := _userDB.NewMysqlRepository(Conn)
-	userUseCase := _userUseCase.NewUserUseCase(userRepository, timeoutContext)
+	userUseCase := _userUseCase.NewUserUseCase(userRepository, timeoutContext, configJWT)
 	userController := _userController.NewUserController(userUseCase)
 	productRepository := _productDB.NewMysqlRepository(Conn)
 	productUseCase := _productUseCase.NewProductUseCase(productRepository, timeoutContext)
@@ -55,6 +59,7 @@ func main() {
 	routesInit := routes.ControllerList{
 		UserController:    *userController,
 		ProductController: *productController,
+		JWTMiddleware:     configJWT.Init(),
 	}
 
 	routesInit.RouteRegister(e)
