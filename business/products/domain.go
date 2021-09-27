@@ -23,6 +23,7 @@ type Review_RatingDomain struct {
 	ID        int
 	Review    string
 	Rating    float32
+	UserID    int
 	ProductID int
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -55,7 +56,7 @@ type UseCase interface {
 	Get(ctx context.Context) ([]ProductDomain, error)
 	UploadProduct(ctx context.Context, productdomain ProductDomain) (ProductDomain, error)
 	UpdateProduct(ctx context.Context, domain ProductDomain, id int) (ProductDomain, error)
-
+	//kurang product details
 	UploadType(ctx context.Context, domain Product_typeDomain) (Product_typeDomain, error)
 
 	UploadSize(ctx context.Context, sizedomain SizeDomain) (SizeDomain, error)

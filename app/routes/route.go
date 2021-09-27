@@ -5,17 +5,21 @@ import (
 	"final_project/controllers/users"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type ControllerList struct {
 	UserController    users.UserController
 	ProductController products.ProductController
+	JWTMiddleware     middleware.JWTConfig
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
+
 	e.POST("users/login", cl.UserController.Login)
-	e.GET("users/details", cl.UserController.Details)
+	e.GET("users/details", cl.UserController.Details, middleware.JWTWithConfig(cl.JWTMiddleware))
 	e.POST("users/registers", cl.UserController.Register)
+	e.POST("users/reviews", cl.UserController.UploadReview, middleware.JWTWithConfig(cl.JWTMiddleware))
 
 	e.GET("products", cl.ProductController.Get)
 	e.POST("products/uploads", cl.ProductController.UploadProduct)

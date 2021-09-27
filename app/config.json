@@ -7,14 +7,14 @@
       "timeout":2
     },
     "database": {
-        "host": "127.0.0.1",
+        "host": "localhost",
         "port": "3306",
         "user": "root",
         "pass": "syahril123",
         "name": "ecommerce"
     },
     "jwt" : {
-      "secret" : "user123",
-      "expired" : 72
+      "secret" : "syahril123",
+      "expired" : 1000000
     }
   }

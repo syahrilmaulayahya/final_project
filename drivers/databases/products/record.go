@@ -25,6 +25,7 @@ type Review_Rating struct {
 	ID        int `gorm:"primaryKey"`
 	Review    string
 	Rating    float32
+	UserID    int
 	ProductID int
 	CreatedAt time.Time
 	UpdatedAt time.Time
