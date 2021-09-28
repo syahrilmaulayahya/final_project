@@ -3,18 +3,21 @@ package transactions
 import (
 	"context"
 	"errors"
+	"final_project/app/middleware"
 	"time"
 )
 
 type TransactionUseCase struct {
 	Repo           Repository
 	ContextTimeout time.Duration
+	JwtToken       middleware.ConfigJWT
 }
 
-func NewTransactionUseCase(repo Repository, timeOut time.Duration) UseCase {
+func NewTransactionUseCase(repo Repository, timeOut time.Duration, token middleware.ConfigJWT) UseCase {
 	return &TransactionUseCase{
 		Repo:           repo,
 		ContextTimeout: timeOut,
+		JwtToken:       token,
 	}
 }
 func (uc *TransactionUseCase) Add(ctx context.Context, domain Shopping_CartDomain) (Shopping_CartDomain, error) {

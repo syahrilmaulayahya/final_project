@@ -2,6 +2,7 @@ package routes
 
 import (
 	"final_project/controllers/products"
+	"final_project/controllers/transactions"
 	"final_project/controllers/users"
 
 	"github.com/labstack/echo/v4"
@@ -9,9 +10,10 @@ import (
 )
 
 type ControllerList struct {
-	UserController    users.UserController
-	ProductController products.ProductController
-	JWTMiddleware     middleware.JWTConfig
+	UserController        users.UserController
+	ProductController     products.ProductController
+	TransactionController transactions.TransactionController
+	JWTMiddleware         middleware.JWTConfig
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
@@ -36,4 +38,6 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 
 	e.POST("products/uploaddescriptions", cl.ProductController.UploadDescription)
 	e.PUT("products/updatedescriptions", cl.ProductController.UpdateDescription)
+
+	e.POST("transactions/addshoppingcarts", cl.TransactionController.Add, middleware.JWTWithConfig(cl.JWTMiddleware))
 }

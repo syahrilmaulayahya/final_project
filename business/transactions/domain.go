@@ -9,8 +9,11 @@ type Shopping_CartDomain struct {
 	ID        int
 	UserID    int
 	ProductID int
+	Product   interface{}
 	SizeID    int
+	Size      interface{}
 	Quantity  int
+	Price     float64
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

@@ -4,10 +4,13 @@ import (
 	_middleware "final_project/app/middleware"
 	"final_project/app/routes"
 	_productUseCase "final_project/business/products"
+	_transactionUseCase "final_project/business/transactions"
 	_userUseCase "final_project/business/users"
 	_productController "final_project/controllers/products"
+	_transactionController "final_project/controllers/transactions"
 	_userController "final_project/controllers/users"
 	_productDB "final_project/drivers/databases/products"
+	_transactionDB "final_project/drivers/databases/transactions"
 	_userDB "final_project/drivers/databases/users"
 	_mysqlDriver "final_project/drivers/mysql"
 	"log"
@@ -30,7 +33,8 @@ func init() {
 }
 
 func dbMigrate(db *gorm.DB) {
-	db.AutoMigrate(&_userDB.User{}, &_productDB.Product{}, &_userDB.Review_Rating{}, &_productDB.Product_description{}, &_productDB.Product_type{}, &_productDB.Size{})
+	db.AutoMigrate(&_userDB.User{}, &_productDB.Product{}, &_userDB.Review_Rating{}, &_productDB.Product_description{}, &_productDB.Product_type{},
+		&_productDB.Size{}, &_transactionDB.Shopping_Cart{})
 }
 
 func main() {
@@ -58,10 +62,14 @@ func main() {
 	productUseCase := _productUseCase.NewProductUseCase(productRepository, timeoutContext)
 	productController := _productController.NewProductController(productUseCase)
 
+	transactionRepository := _transactionDB.NewMysqlRepository(Conn)
+	transactionUseCase := _transactionUseCase.NewTransactionUseCase(transactionRepository, timeoutContext, configJWT)
+	transactionController := _transactionController.NewTransactionController(transactionUseCase)
 	routesInit := routes.ControllerList{
-		UserController:    *userController,
-		ProductController: *productController,
-		JWTMiddleware:     configJWT.Init(),
+		UserController:        *userController,
+		ProductController:     *productController,
+		TransactionController: *transactionController,
+		JWTMiddleware:         configJWT.Init(),
 	}
 
 	routesInit.RouteRegister(e)
