@@ -3,6 +3,7 @@ package product
 import (
 	"context"
 	"final_project/business/products"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -27,10 +28,34 @@ func (rep MysqlProductRepository) Get(ctx context.Context) ([]products.ProductDo
 	}
 	return ToListDomain(product), nil
 }
+func (rep MysqlProductRepository) Details(ctx context.Context, id int) (products.ProductDomain, error) {
+	var product Product
+	result := rep.Conn.Preload("Review_Rating").Preload("Product_description").Preload("Product_type").Preload("Size").Find(&product, "id = ?", id)
+	if result.Error != nil {
+		return products.ProductDomain{}, result.Error
+	}
+	return product.ToDomain(), nil
+}
+func (rep MysqlProductRepository) Search(ctx context.Context, words string) ([]products.ProductDomain, error) {
+	var product []Product
+	result := rep.Conn.Preload("Review_Rating").Preload("Product_description").Preload("Product_type").Preload("Size").Where("name LIKE?", ("%" + words + "%")).Find(&product)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return ToListDomain(product), nil
+}
+func (rep MysqlProductRepository) FilterByType(ctx context.Context, typeid int) ([]products.ProductDomain, error) {
+	var product []Product
+	result := rep.Conn.Preload("Review_Rating").Preload("Product_description").Preload("Product_type").Preload("Size").Where("product_type_id = ?", typeid).Find(&product)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return ToListDomain(product), nil
+}
 func (rep MysqlProductRepository) UploadProduct(ctx context.Context, productdomain products.ProductDomain) (products.ProductDomain, error) {
 	var newProduct Product
 	newProduct.Code = productdomain.Code
-	newProduct.Name = productdomain.Name
+	newProduct.Name = strings.ToLower(productdomain.Name)
 	newProduct.Price = productdomain.Price
 	newProduct.Picture_url = productdomain.Picture_url
 	newProduct.Product_typeID = productdomain.Product_typeID

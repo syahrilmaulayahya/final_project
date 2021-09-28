@@ -2,6 +2,7 @@ package respons
 
 import (
 	"final_project/business/products"
+	"strings"
 	"time"
 )
 
@@ -69,7 +70,7 @@ func ProductFromDomain(domain products.ProductDomain) UploadProductResponse {
 	return UploadProductResponse{
 		ID:             domain.ID,
 		Code:           domain.Code,
-		Name:           domain.Name,
+		Name:           strings.Title(domain.Name),
 		Price:          domain.Price,
 		Picture_url:    domain.Picture_url,
 		Product_typeID: domain.Product_typeID,
@@ -93,7 +94,7 @@ func FromDomain(domain products.ProductDomain) ProductResponse {
 	return ProductResponse{
 		ID:                  domain.ID,
 		Code:                domain.Code,
-		Name:                domain.Name,
+		Name:                strings.Title(domain.Name),
 		Price:               domain.Price,
 		Picture_url:         domain.Picture_url,
 		CreatedAt:           domain.CreatedAt,
@@ -117,6 +118,7 @@ func TypeFromDomain(domain products.Product_typeDomain) Product_typeResponse {
 func ListFromDomain(data []products.ProductDomain) (result []ProductResponse) {
 	result = []ProductResponse{}
 	for _, products := range data {
+		products.Name = strings.Title(products.Name)
 		result = append(result, FromDomain(products))
 	}
 	return

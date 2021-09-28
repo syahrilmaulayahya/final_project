@@ -53,9 +53,11 @@ func main() {
 	userRepository := _userDB.NewMysqlRepository(Conn)
 	userUseCase := _userUseCase.NewUserUseCase(userRepository, timeoutContext, configJWT)
 	userController := _userController.NewUserController(userUseCase)
+
 	productRepository := _productDB.NewMysqlRepository(Conn)
 	productUseCase := _productUseCase.NewProductUseCase(productRepository, timeoutContext)
 	productController := _productController.NewProductController(productUseCase)
+
 	routesInit := routes.ControllerList{
 		UserController:    *userController,
 		ProductController: *productController,

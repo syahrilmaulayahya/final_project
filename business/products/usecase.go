@@ -25,6 +25,37 @@ func (uc *ProductUseCase) Get(ctx context.Context) ([]ProductDomain, error) {
 	}
 	return product, nil
 }
+func (uc *ProductUseCase) Details(ctx context.Context, id int) (ProductDomain, error) {
+	if id == 0 {
+		return ProductDomain{}, errors.New("product id is empty")
+	}
+	product, err := uc.Repo.Details(ctx, id)
+	if err != nil {
+		return ProductDomain{}, err
+	}
+	return product, nil
+}
+func (uc *ProductUseCase) Search(ctx context.Context, words string) ([]ProductDomain, error) {
+	product, err := uc.Repo.Search(ctx, words)
+	if words == "" {
+		return product, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	return product, nil
+}
+
+func (uc *ProductUseCase) FilterByType(ctx context.Context, typeid int) ([]ProductDomain, error) {
+	if typeid == 0 {
+		return nil, errors.New("typeid is empty")
+	}
+	product, err := uc.Repo.FilterByType(ctx, typeid)
+	if err != nil {
+		return nil, err
+	}
+	return product, nil
+}
 func (uc *ProductUseCase) UploadProduct(ctx context.Context, productdomain ProductDomain) (ProductDomain, error) {
 	if productdomain.Code == "" {
 		return ProductDomain{}, errors.New("product code is empty")

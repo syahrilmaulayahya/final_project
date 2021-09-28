@@ -8,7 +8,7 @@ import (
 type Product struct {
 	ID                  int    `gorm:"primaryKey"`
 	Code                string `gorm:"unique"`
-	Name                string
+	Name                string `gorm:"index"`
 	Total_Stock         int
 	Price               float64
 	Picture_url         string

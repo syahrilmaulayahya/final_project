@@ -15,13 +15,16 @@ type ControllerList struct {
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
-
+	e.Pre(middleware.RemoveTrailingSlash())
 	e.POST("users/login", cl.UserController.Login)
 	e.GET("users/details", cl.UserController.Details, middleware.JWTWithConfig(cl.JWTMiddleware))
 	e.POST("users/registers", cl.UserController.Register)
 	e.POST("users/reviews", cl.UserController.UploadReview, middleware.JWTWithConfig(cl.JWTMiddleware))
 
 	e.GET("products", cl.ProductController.Get)
+	e.GET("products/details/:id", cl.ProductController.Details)
+	e.GET("products/search", cl.ProductController.Search)
+	e.GET("products/filters", cl.ProductController.FilterByType)
 	e.POST("products/uploads", cl.ProductController.UploadProduct)
 	e.PUT("products/updates", cl.ProductController.UpdateProduct)
 

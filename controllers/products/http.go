@@ -1,11 +1,13 @@
 package products
 
 import (
+	"errors"
 	"final_project/business/products"
 	"final_project/controllers"
 	"final_project/controllers/products/requests"
 	"final_project/controllers/products/respons"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -27,6 +29,43 @@ func (ProductController ProductController) Get(c echo.Context) error {
 		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.ListFromDomain(product))
+}
+func (ProductController ProductController) Details(c echo.Context) error {
+	id, fail := strconv.Atoi(c.Param("id"))
+	if fail != nil {
+		return errors.New("gagal konversi id")
+	}
+	ctx := c.Request().Context()
+	product, err := ProductController.ProductUseCase.Details(ctx, id)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponse(c, respons.FromDomain(product))
+}
+func (ProductController ProductController) Search(c echo.Context) error {
+	searchProduct := requests.Product_Search{}
+	c.Bind(&searchProduct)
+	ctx := c.Request().Context()
+	result, err := ProductController.ProductUseCase.Search(ctx, searchProduct.Name)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponse(c, respons.ListFromDomain(result))
+
+}
+func (ProductController ProductController) FilterByType(c echo.Context) error {
+
+	filterProduct, fail := strconv.Atoi(c.QueryParam("product_typeid"))
+	if fail != nil {
+		return errors.New("gagal konversi product type id")
+	}
+
+	ctx := c.Request().Context()
+	result, err := ProductController.ProductUseCase.FilterByType(ctx, filterProduct)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponse(c, respons.ListFromDomain(result))
 }
 func (ProductController ProductController) UploadProduct(c echo.Context) error {
 	newProduct := requests.ProductUpload{}

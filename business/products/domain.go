@@ -54,9 +54,12 @@ type SizeDomain struct {
 
 type UseCase interface {
 	Get(ctx context.Context) ([]ProductDomain, error)
+	Details(ctx context.Context, id int) (ProductDomain, error)
+	Search(ctx context.Context, words string) ([]ProductDomain, error)
+	FilterByType(ctx context.Context, typeid int) ([]ProductDomain, error)
 	UploadProduct(ctx context.Context, productdomain ProductDomain) (ProductDomain, error)
 	UpdateProduct(ctx context.Context, domain ProductDomain, id int) (ProductDomain, error)
-	//kurang product details
+
 	UploadType(ctx context.Context, domain Product_typeDomain) (Product_typeDomain, error)
 
 	UploadSize(ctx context.Context, sizedomain SizeDomain) (SizeDomain, error)
@@ -68,9 +71,12 @@ type UseCase interface {
 }
 type Repository interface {
 	Get(ctx context.Context) ([]ProductDomain, error)
+	Details(ctx context.Context, id int) (ProductDomain, error)
+	Search(ctx context.Context, words string) ([]ProductDomain, error)
+	FilterByType(ctx context.Context, typeid int) ([]ProductDomain, error)
 	UploadProduct(ctx context.Context, productdomain ProductDomain) (ProductDomain, error)
 	UpdateProduct(ctx context.Context, domain ProductDomain, id int) (ProductDomain, error)
-	//Kurang product details
+
 	UploadType(ctx context.Context, domain Product_typeDomain) (Product_typeDomain, error)
 
 	UploadSize(ctx context.Context, sizedomain SizeDomain) (SizeDomain, error)
