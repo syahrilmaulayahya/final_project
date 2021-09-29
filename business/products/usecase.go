@@ -104,14 +104,34 @@ func (uc *ProductUseCase) UploadType(ctx context.Context, domain Product_typeDom
 }
 
 func (uc *ProductUseCase) UploadSize(ctx context.Context, sizedomain SizeDomain) (SizeDomain, error) {
+	var sizelist = []string{"S", "M", "L", "XL", "XXL"}
+	var typeList = []string{"Anak", "Dewasa"}
 	if sizedomain.ProductID == 0 {
 		return SizeDomain{}, errors.New("product id is empty")
 	}
-	if sizedomain.Type == "" {
-		return SizeDomain{}, errors.New("size type is empty")
+	// if sizedomain.Type == "" {
+	// 	return SizeDomain{}, errors.New("size type is empty")
+	// }
+	for i := 0; i < len(typeList); i++ {
+		if sizedomain.Type == typeList[i] {
+			break
+		}
+		if i == len(typeList)-1 {
+			if sizedomain.Size != sizelist[i] {
+				return SizeDomain{}, errors.New("invalid size type")
+			}
+		}
 	}
-	if sizedomain.Size == "" {
-		return SizeDomain{}, errors.New("size is empty")
+
+	for i := 0; i < len(sizelist); i++ {
+		if sizedomain.Size == sizelist[i] {
+			break
+		}
+		if i == len(sizelist)-1 {
+			if sizedomain.Size != sizelist[i] {
+				return SizeDomain{}, errors.New("invalid size")
+			}
+		}
 	}
 	if sizedomain.Stock < 0 {
 		return SizeDomain{}, errors.New("stock is empty")
@@ -123,11 +143,28 @@ func (uc *ProductUseCase) UploadSize(ctx context.Context, sizedomain SizeDomain)
 	return size, nil
 }
 func (uc *ProductUseCase) UpdateSize(ctx context.Context, sizedomain SizeDomain, id int) (SizeDomain, error) {
-	if sizedomain.Type == "" {
-		return SizeDomain{}, errors.New("size type is empty")
+	var sizelist = []string{"S", "M", "L", "XL", "XXL"}
+	var typeList = []string{"Anak", "Dewasa"}
+	for i := 0; i < len(typeList); i++ {
+		if sizedomain.Type == typeList[i] {
+			break
+		}
+		if i == len(typeList)-1 {
+			if sizedomain.Size != sizelist[i] {
+				return SizeDomain{}, errors.New("invalid size type")
+			}
+		}
 	}
-	if sizedomain.Size == "" {
-		return SizeDomain{}, errors.New("size is empty")
+
+	for i := 0; i < len(sizelist); i++ {
+		if sizedomain.Size == sizelist[i] {
+			break
+		}
+		if i == len(sizelist)-1 {
+			if sizedomain.Size != sizelist[i] {
+				return SizeDomain{}, errors.New("invalid size")
+			}
+		}
 	}
 	updateSize, err := uc.Repo.UpdateSize(ctx, sizedomain, id)
 	if err != nil {

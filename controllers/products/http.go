@@ -8,6 +8,7 @@ import (
 	"final_project/controllers/products/respons"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 )
@@ -107,6 +108,8 @@ func (ProductController ProductController) UploadSize(c echo.Context) error {
 	newSize := requests.SizeUpload{}
 	c.Bind(&newSize)
 	uploadSize := newSize.ToDomain()
+	uploadSize.Type = strings.Title(uploadSize.Type)
+	uploadSize.Size = strings.ToUpper(uploadSize.Size)
 	ctx := c.Request().Context()
 	size, err := ProductController.ProductUseCase.UploadSize(ctx, uploadSize)
 	if err != nil {
@@ -118,6 +121,8 @@ func (ProductController ProductController) UpdateSize(c echo.Context) error {
 	newSize := requests.SizeUpdate{}
 	c.Bind(&newSize)
 	updateSize := newSize.ToDomain()
+	updateSize.Type = strings.Title(updateSize.Type)
+	updateSize.Size = strings.ToUpper(updateSize.Size)
 	ctx := c.Request().Context()
 	size, err := ProductController.ProductUseCase.UpdateSize(ctx, updateSize, newSize.ID)
 	if err != nil {

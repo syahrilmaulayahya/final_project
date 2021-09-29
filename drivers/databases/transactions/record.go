@@ -51,7 +51,29 @@ type Shopping_Cart struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
+type Payment_Method struct {
+	ID        int    `gorm:"primaryKey"`
+	Name      string `gorm:"unique"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+type Shipment struct {
+	ID             int `gorm:"primaryKey"`
+	Name           string
+	Shipment_Type  string
+	Shipment_Price float64
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+}
 
+func (payment_method *Payment_Method) ToDomain() transactions.Payment_MethodDomain {
+	return transactions.Payment_MethodDomain{
+		ID:        payment_method.ID,
+		Name:      payment_method.Name,
+		CreatedAt: payment_method.CreatedAt,
+		UpdatedAt: payment_method.UpdatedAt,
+	}
+}
 func (shopping_cart *Shopping_Cart) ToDomain() transactions.Shopping_CartDomain {
 	return transactions.Shopping_CartDomain{
 		ID:        shopping_cart.ID,
@@ -65,4 +87,27 @@ func (shopping_cart *Shopping_Cart) ToDomain() transactions.Shopping_CartDomain 
 		CreatedAt: shopping_cart.CreatedAt,
 		UpdatedAt: shopping_cart.UpdatedAt,
 	}
+}
+func (shipment *Shipment) ToDomain() transactions.ShipmentDomain {
+	return transactions.ShipmentDomain{
+		ID:             shipment.ID,
+		Name:           shipment.Name,
+		Shipment_Type:  shipment.Shipment_Type,
+		Shipment_Price: shipment.Shipment_Price,
+		UpdatedAt:      shipment.UpdatedAt,
+		CreatedAt:      shipment.CreatedAt,
+	}
+}
+func ListSCToDomain(data []Shopping_Cart) (result []transactions.Shopping_CartDomain) {
+	for _, SC := range data {
+		result = append(result, SC.ToDomain())
+	}
+	return
+}
+
+func ListPMToDomain(data []Payment_Method) (result []transactions.Payment_MethodDomain) {
+	for _, SC := range data {
+		result = append(result, SC.ToDomain())
+	}
+	return
 }

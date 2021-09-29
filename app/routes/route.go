@@ -40,4 +40,10 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	e.PUT("products/updatedescriptions", cl.ProductController.UpdateDescription)
 
 	e.POST("transactions/addshoppingcarts", cl.TransactionController.Add, middleware.JWTWithConfig(cl.JWTMiddleware))
+	e.GET("transactions/details", cl.TransactionController.DetailSC, middleware.JWTWithConfig(cl.JWTMiddleware))
+
+	e.POST("transactions/addpayments", cl.TransactionController.AddPM)
+	e.GET("transactions/getpayments", cl.TransactionController.GetPM)
+
+	e.POST("transactions/addshipment", cl.TransactionController.AddShipment)
 }

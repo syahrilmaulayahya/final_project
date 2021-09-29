@@ -34,7 +34,7 @@ func init() {
 
 func dbMigrate(db *gorm.DB) {
 	db.AutoMigrate(&_userDB.User{}, &_productDB.Product{}, &_userDB.Review_Rating{}, &_productDB.Product_description{}, &_productDB.Product_type{},
-		&_productDB.Size{}, &_transactionDB.Shopping_Cart{})
+		&_productDB.Size{}, &_transactionDB.Shopping_Cart{}, &_transactionDB.Payment_Method{}, &_transactionDB.Shipment{})
 }
 
 func main() {
