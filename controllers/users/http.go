@@ -43,7 +43,7 @@ func (usercontroller UserController) Login(c echo.Context) error {
 	user, err := usercontroller.UserUseCase.Login(ctx, userLogin.Email, userLogin.Password)
 
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusForbidden, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.FromDomain(user))
 }
