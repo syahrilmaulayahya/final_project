@@ -106,8 +106,15 @@ func ListSCToDomain(data []Shopping_Cart) (result []transactions.Shopping_CartDo
 }
 
 func ListPMToDomain(data []Payment_Method) (result []transactions.Payment_MethodDomain) {
-	for _, SC := range data {
-		result = append(result, SC.ToDomain())
+	for _, PM := range data {
+		result = append(result, PM.ToDomain())
+	}
+	return
+}
+
+func ListShipmentToDomain(data []Shipment) (result []transactions.ShipmentDomain) {
+	for _, Shipment := range data {
+		result = append(result, Shipment.ToDomain())
 	}
 	return
 }

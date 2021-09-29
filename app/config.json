@@ -15,6 +15,6 @@
     },
     "jwt" : {
       "secret" : "syahril123",
-      "expired" : 999999999999999999999
+      "expired" : 72
     }
   }

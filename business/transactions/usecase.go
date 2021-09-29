@@ -82,10 +82,10 @@ func (uc *TransactionUseCase) AddShipment(ctx context.Context, domain ShipmentDo
 	return shipment, nil
 }
 
-// func (uc *TransactionUseCase) GetShipment(ctx context.Context) ([]ShipmentDomain, error) {
-// 	shipment, err := uc.Repo.GetShipment(ctx)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return shipment, nil
-// }
+func (uc *TransactionUseCase) GetShipment(ctx context.Context) ([]ShipmentDomain, error) {
+	shipment, err := uc.Repo.GetShipment(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return shipment, nil
+}

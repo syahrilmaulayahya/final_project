@@ -87,3 +87,12 @@ func (rep MysqlTransactionRepository) AddShipment(ctx context.Context, domain tr
 	}
 	return shipment.ToDomain(), nil
 }
+
+func (rep MysqlTransactionRepository) GetShipment(ctx context.Context) ([]transactions.ShipmentDomain, error) {
+	var listshipment []Shipment
+	result := rep.Conn.Find(&listshipment)
+	if result.Error != nil {
+		return []transactions.ShipmentDomain{}, result.Error
+	}
+	return ListShipmentToDomain(listshipment), nil
+}

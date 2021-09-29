@@ -40,7 +40,7 @@ type UseCase interface {
 	GetPM(ctx context.Context) ([]Payment_MethodDomain, error)
 
 	AddShipment(ctx context.Context, domain ShipmentDomain) (ShipmentDomain, error)
-	// GetShipment(ctx context.Context) ([]ShipmentDomain, error)
+	GetShipment(ctx context.Context) ([]ShipmentDomain, error)
 }
 type Repository interface {
 	Add(ctx context.Context, domain Shopping_CartDomain) (Shopping_CartDomain, error)
@@ -50,5 +50,5 @@ type Repository interface {
 	GetPM(ctx context.Context) ([]Payment_MethodDomain, error)
 
 	AddShipment(ctx context.Context, domain ShipmentDomain) (ShipmentDomain, error)
-	// GetShipment(ctx context.Context) ([]ShipmentDomain, error)
+	GetShipment(ctx context.Context) ([]ShipmentDomain, error)
 }

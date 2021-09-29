@@ -79,3 +79,12 @@ func (transactionController TransactionController) AddShipment(c echo.Context) e
 	}
 	return controllers.NewSuccessResponse(c, newShipment)
 }
+
+func (transactionController TransactionController) GetShipment(c echo.Context) error {
+	ctx := c.Request().Context()
+	shipment, err := transactionController.TransactionUseCase.GetShipment(ctx)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponse(c, respons.ListShipmentFromDomain(shipment))
+}
