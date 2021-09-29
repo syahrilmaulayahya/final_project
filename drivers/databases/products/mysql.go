@@ -96,7 +96,7 @@ func (rep MysqlProductRepository) UploadSize(ctx context.Context, sizedomain pro
 
 	newSize.ProductID = sizedomain.ProductID
 	newSize.Type = sizedomain.Type
-	newSize.Size = sizedomain.Size
+	newSize.Size = strings.ToUpper(sizedomain.Size)
 	newSize.Stock = sizedomain.Stock
 
 	result := rep.Conn.Create(&newSize)

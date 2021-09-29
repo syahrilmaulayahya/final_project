@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"final_project/app/middleware"
+	"final_project/helpers"
 	"time"
 )
 
@@ -24,11 +25,15 @@ func (uc *UserUseCase) Register(ctx context.Context, domain Domain) (Domain, err
 	if domain.Name == "" {
 		return Domain{}, errors.New("name is empty")
 	}
-	if domain.Email == "" {
-		return Domain{}, errors.New("email is empty")
+
+	if !helpers.CheckEmail(domain.Email) {
+		return Domain{}, errors.New("invalid email type")
 	}
-	if domain.Password == "" {
-		return Domain{}, errors.New("password is empty")
+	// if domain.Password == "" {
+	// 	return Domain{}, errors.New("password is empty")
+	// }
+	if !helpers.CheckPassword(domain.Password) {
+		return Domain{}, errors.New("password must contain more than 6 character, contains uppercase, lowercase and numbers")
 	}
 	if domain.Phone_number == 0 {
 		return Domain{}, errors.New("phone number is empty")
