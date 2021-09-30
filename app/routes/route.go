@@ -51,4 +51,6 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	e.POST("transactions/addshipments", cl.TransactionController.AddShipment)
 	e.GET("transactions/getshipments", cl.TransactionController.GetShipment)
 
+	e.GET("transactions/transactiondetails", cl.TransactionController.GetTransDetail, middleware.JWTWithConfig(cl.JWTMiddleware))
+
 }

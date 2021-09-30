@@ -34,7 +34,7 @@ func (ProductController ProductController) Get(c echo.Context) error {
 func (ProductController ProductController) Details(c echo.Context) error {
 	id, fail := strconv.Atoi(c.Param("id"))
 	if fail != nil {
-		return errors.New("gagal konversi id")
+		return errors.New("failed to convert id")
 	}
 	ctx := c.Request().Context()
 	product, err := ProductController.ProductUseCase.Details(ctx, id)

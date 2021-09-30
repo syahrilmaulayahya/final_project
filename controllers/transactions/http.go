@@ -127,3 +127,14 @@ func (TransactionController TransactionController) Pay(c echo.Context) error {
 	return controllers.NewSuccessResponse(c, respons.TransactionFromDomain(result))
 
 }
+
+func (TransactionController TransactionController) GetTransDetail(c echo.Context) error {
+	userid := middleware.GetClaimsUserId(c)
+	transactionid, _ := strconv.Atoi(c.QueryParam("transactionid"))
+	ctx := c.Request().Context()
+	detail, transaction, shopping, err := TransactionController.TransactionUseCase.GetTransDetail(ctx, userid, transactionid)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponseDetails(c, respons.DetailFromDomain(detail), respons.TransactionFromDomain(transaction), respons.ShoppingCartFromDomain(shopping))
+}
