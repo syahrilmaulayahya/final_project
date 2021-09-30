@@ -18,11 +18,23 @@ type User struct {
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }
+type Product_description struct {
+	ProductID   int `gorm:"primaryKey, unique"`
+	Description string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+type Product_type struct {
+	ID        int    `gorm:"primaryKey"`
+	Name      string `gorm:"unique"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
 type Product struct {
 	ID             int    `gorm:"primaryKey"`
 	Code           string `gorm:"unique"`
 	Name           string `gorm:"index"`
-	Total_Stock    int
 	Price          float64
 	Picture_url    string
 	CreatedAt      time.Time
@@ -79,7 +91,28 @@ type Transaction struct {
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 }
+type Transaction_Detail struct {
+	UserID         int
+	StatusShipment string
+	TransactionID  int `gorm:"primaryKey"`
+	Transaction    Transaction
+	ProductID      int `gorm:"primaryKey"`
+	Product        Product
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+}
 
+func (transaction_details *Transaction_Detail) ToDomain() transactions.Transaction_DetailDomain {
+	return transactions.Transaction_DetailDomain{
+
+		UserID:         transaction_details.UserID,
+		StatusShipment: transaction_details.StatusShipment,
+		TransactionID:  transaction_details.TransactionID,
+		ProductID:      transaction_details.ProductID,
+		CreatedAt:      transaction_details.CreatedAt,
+		UpdatedAt:      transaction_details.UpdatedAt,
+	}
+}
 func (payment_method *Payment_Method) ToDomain() transactions.Payment_MethodDomain {
 	return transactions.Payment_MethodDomain{
 		ID:        payment_method.ID,

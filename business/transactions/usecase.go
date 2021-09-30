@@ -114,3 +114,11 @@ func (uc *TransactionUseCase) Pay(ctx context.Context, transactionid int, amount
 	}
 	return pay, nil
 }
+
+func (uc *TransactionUseCase) GetTransDetail(ctx context.Context, userid, transid int) (Transaction_DetailDomain, TransactionDomain, Shopping_CartDomain, error) {
+	detail, trans, prod, err := uc.Repo.GetTransDetail(ctx, userid, transid)
+	if err != nil {
+		return Transaction_DetailDomain{}, TransactionDomain{}, Shopping_CartDomain{}, err
+	}
+	return detail, trans, prod, nil
+}

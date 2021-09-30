@@ -123,6 +123,10 @@ func (rep MysqlTransactionRepository) Checkout(ctx context.Context, userid, shop
 	checkout.Payment_MethodID = 1
 	checkout.ShipmentID = 1
 	result := rep.Conn.Create(&checkout)
+	resultFinal := rep.Conn.Preload("Shipment").Preload("Payment_Method").First(&checkout, "id = ?", checkout.ID)
+	if resultFinal.Error != nil {
+		return transactions.TransactionDomain{}, resultFinal.Error
+	}
 	if result.Error != nil {
 		return transactions.TransactionDomain{}, result.Error
 	}
@@ -133,6 +137,7 @@ func (rep MysqlTransactionRepository) ChoosePnS(ctx context.Context, domain tran
 	var pns Transaction
 	var shipment Shipment
 	var shopping_cart Shopping_Cart
+	var payment Payment_Method
 
 	chooseShipment := rep.Conn.First(&shipment, "id = ?", domain.ShipmentID)
 	if chooseShipment.Error != nil {
@@ -142,9 +147,13 @@ func (rep MysqlTransactionRepository) ChoosePnS(ctx context.Context, domain tran
 	if result.Error != nil {
 		return transactions.TransactionDomain{}, result.Error
 	}
-	chooseSC := rep.Conn.First(&shopping_cart, "id = ?", pns.Payment_MethodID)
+	chooseSC := rep.Conn.First(&shopping_cart, "id = ?", pns.Shopping_CartID)
 	if chooseSC.Error != nil {
 		return transactions.TransactionDomain{}, chooseSC.Error
+	}
+	choosePayment := rep.Conn.First(&payment, "id = ?", pns.Payment_MethodID)
+	if choosePayment.Error != nil {
+		return transactions.TransactionDomain{}, choosePayment.Error
 	}
 	resultFinal := rep.Conn.Preload("Shipment").Preload("Payment_Method").First(&pns, "id = ?", domain.ID).Table("transactions").Where("id= ?", domain.ID).Updates(map[string]interface{}{"total_price": shopping_cart.Price + shipment.Shipment_Price})
 	if resultFinal.Error != nil {
@@ -155,6 +164,7 @@ func (rep MysqlTransactionRepository) ChoosePnS(ctx context.Context, domain tran
 
 func (rep MysqlTransactionRepository) Pay(ctx context.Context, transactionid int, amount float64) (transactions.TransactionDomain, error) {
 	var transaction Transaction
+
 	chooseTransaction := rep.Conn.First(&transaction, "id = ?", transactionid)
 	if chooseTransaction.Error != nil {
 		return transactions.TransactionDomain{}, chooseTransaction.Error
@@ -164,9 +174,44 @@ func (rep MysqlTransactionRepository) Pay(ctx context.Context, transactionid int
 		if updateStatus.Error != nil {
 			return transactions.TransactionDomain{}, updateStatus.Error
 		}
+		var shopping_cart Shopping_Cart
+		search := rep.Conn.First(&shopping_cart, "id = ?", transaction.Shopping_CartID)
+		if search.Error != nil {
+			return transactions.TransactionDomain{}, search.Error
+		}
+		var detail Transaction_Detail
+		detail.UserID = transaction.UserID
+		detail.StatusShipment = "Undelivered"
+		detail.TransactionID = transactionid
+		detail.ProductID = shopping_cart.ProductID
+		createDetail := rep.Conn.Create(&detail)
+		if createDetail.Error != nil {
+			return transactions.TransactionDomain{}, createDetail.Error
+		}
+
 	} else {
 		return transactions.TransactionDomain{}, errors.New("invalid payment, please enter number same as total price")
 	}
 	return transaction.ToDomain(), nil
 
+}
+
+func (rep MysqlTransactionRepository) GetTransDetail(ctx context.Context, userid, transid int) (transactions.Transaction_DetailDomain, transactions.TransactionDomain, transactions.Shopping_CartDomain, error) {
+	var detail Transaction_Detail
+	var transaction Transaction
+	var shopping_cart Shopping_Cart
+
+	searchDetail := rep.Conn.Find(&detail, "user_id = ?", userid)
+	if searchDetail.Error != nil {
+		return transactions.Transaction_DetailDomain{}, transactions.TransactionDomain{}, transactions.Shopping_CartDomain{}, searchDetail.Error
+	}
+	searchTransaction := rep.Conn.Preload("Shipment").Preload("Payment_Method").Find(&transaction, "id = ?", transid)
+	if searchTransaction.Error != nil {
+		return transactions.Transaction_DetailDomain{}, transactions.TransactionDomain{}, transactions.Shopping_CartDomain{}, searchTransaction.Error
+	}
+	searchSC := rep.Conn.Preload("Product").Preload("Size").Find(&shopping_cart, "id = ?", transaction.Shopping_CartID)
+	if searchSC.Error != nil {
+		return transactions.Transaction_DetailDomain{}, transactions.TransactionDomain{}, transactions.Shopping_CartDomain{}, searchSC.Error
+	}
+	return detail.ToDomain(), transaction.ToDomain(), shopping_cart.ToDomain(), nil
 }
