@@ -65,6 +65,20 @@ type Shipment struct {
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }
+type Transaction struct {
+	ID               int `gorm:"primaryKey"`
+	Status           string
+	UserID           int
+	Shopping_CartID  int
+	Total_Qty        int
+	Total_Price      float64
+	Payment_MethodID int
+	Payment_Method   Payment_Method
+	ShipmentID       int
+	Shipment         Shipment
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
+}
 
 func (payment_method *Payment_Method) ToDomain() transactions.Payment_MethodDomain {
 	return transactions.Payment_MethodDomain{
@@ -96,6 +110,22 @@ func (shipment *Shipment) ToDomain() transactions.ShipmentDomain {
 		Shipment_Price: shipment.Shipment_Price,
 		UpdatedAt:      shipment.UpdatedAt,
 		CreatedAt:      shipment.CreatedAt,
+	}
+}
+func (checkout *Transaction) ToDomain() transactions.TransactionDomain {
+	return transactions.TransactionDomain{
+		ID:               checkout.ID,
+		Status:           checkout.Status,
+		UserID:           checkout.UserID,
+		Shopping_CartID:  checkout.Shopping_CartID,
+		Total_Qty:        checkout.Total_Qty,
+		Total_Price:      checkout.Total_Price,
+		Payment_MethodID: checkout.Payment_MethodID,
+		Payment_Method:   checkout.Payment_Method,
+		ShipmentID:       checkout.ShipmentID,
+		Shipment:         checkout.Shipment,
+		CreatedAt:        checkout.CreatedAt,
+		UpdatedAt:        checkout.UpdatedAt,
 	}
 }
 func ListSCToDomain(data []Shopping_Cart) (result []transactions.Shopping_CartDomain) {

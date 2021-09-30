@@ -29,9 +29,7 @@ func (uc *UserUseCase) Register(ctx context.Context, domain Domain) (Domain, err
 	if !helpers.CheckEmail(domain.Email) {
 		return Domain{}, errors.New("invalid email type")
 	}
-	// if domain.Password == "" {
-	// 	return Domain{}, errors.New("password is empty")
-	// }
+
 	if !helpers.CheckPassword(domain.Password) {
 		return Domain{}, errors.New("password must contain more than 6 character, contains uppercase, lowercase and numbers")
 	}
@@ -45,12 +43,7 @@ func (uc *UserUseCase) Register(ctx context.Context, domain Domain) (Domain, err
 		return Domain{}, errors.New("date of birtday is empty")
 	}
 	user, err := uc.Repo.Register(ctx, domain)
-	// user.Name = domain.Name
-	// user.Email = domain.Password
-	// user.Password = domain.Password
-	// user.Phone_number = domain.Phone_number
-	// user.Gender = domain.Gender
-	// user.Dob = domain.Dob
+
 	if err != nil {
 		return Domain{}, err
 	}

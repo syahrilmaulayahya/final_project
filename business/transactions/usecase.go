@@ -27,7 +27,7 @@ func (uc *TransactionUseCase) Add(ctx context.Context, domain Shopping_CartDomai
 	if domain.SizeID == 0 {
 		return Shopping_CartDomain{}, errors.New("size id is empty")
 	}
-	if domain.Quantity < 0 {
+	if domain.Quantity <= 0 {
 		return Shopping_CartDomain{}, errors.New("invalid quantity")
 	}
 	transaction, err := uc.Repo.Add(ctx, domain)
@@ -88,4 +88,29 @@ func (uc *TransactionUseCase) GetShipment(ctx context.Context) ([]ShipmentDomain
 		return nil, err
 	}
 	return shipment, nil
+}
+
+func (uc *TransactionUseCase) Checkout(ctx context.Context, userid, shopping_cartid int) (TransactionDomain, error) {
+	checkout, err := uc.Repo.Checkout(ctx, userid, shopping_cartid)
+	if err != nil {
+		return TransactionDomain{}, err
+	}
+
+	return checkout, nil
+}
+
+func (uc *TransactionUseCase) ChoosePnS(ctx context.Context, domain TransactionDomain) (TransactionDomain, error) {
+	pns, err := uc.Repo.ChoosePnS(ctx, domain)
+	if err != nil {
+		return TransactionDomain{}, err
+	}
+	return pns, nil
+}
+
+func (uc *TransactionUseCase) Pay(ctx context.Context, transactionid int, amount float64) (TransactionDomain, error) {
+	pay, err := uc.Repo.Pay(ctx, transactionid, amount)
+	if err != nil {
+		return TransactionDomain{}, err
+	}
+	return pay, nil
 }

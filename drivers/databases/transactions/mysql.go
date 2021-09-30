@@ -2,6 +2,7 @@ package users
 
 import (
 	"context"
+	"errors"
 	"final_project/business/transactions"
 
 	"gorm.io/gorm"
@@ -95,4 +96,77 @@ func (rep MysqlTransactionRepository) GetShipment(ctx context.Context) ([]transa
 		return []transactions.ShipmentDomain{}, result.Error
 	}
 	return ListShipmentToDomain(listshipment), nil
+}
+
+func (rep MysqlTransactionRepository) Checkout(ctx context.Context, userid, shopping_cartid int) (transactions.TransactionDomain, error) {
+	var checkout Transaction
+	var shopping_cart Shopping_Cart
+	var shipment Shipment
+
+	shipmentChoose := rep.Conn.First(&shipment, "id = ?", 1)
+	if shipmentChoose.Error != nil {
+		return transactions.TransactionDomain{}, shipmentChoose.Error
+	}
+
+	sc := rep.Conn.First(&shopping_cart, "id = ?", shopping_cartid)
+	if sc.Error != nil {
+		return transactions.TransactionDomain{}, sc.Error
+	}
+	if shopping_cart.UserID != userid {
+		return transactions.TransactionDomain{}, errors.New("shopping cart not found")
+	}
+	checkout.Status = "unpaid"
+	checkout.UserID = userid
+	checkout.Shopping_CartID = shopping_cartid
+	checkout.Total_Qty = shopping_cart.Quantity
+	checkout.Total_Price = shopping_cart.Price + shipment.Shipment_Price
+	checkout.Payment_MethodID = 1
+	checkout.ShipmentID = 1
+	result := rep.Conn.Create(&checkout)
+	if result.Error != nil {
+		return transactions.TransactionDomain{}, result.Error
+	}
+	return checkout.ToDomain(), nil
+}
+
+func (rep MysqlTransactionRepository) ChoosePnS(ctx context.Context, domain transactions.TransactionDomain) (transactions.TransactionDomain, error) {
+	var pns Transaction
+	var shipment Shipment
+	var shopping_cart Shopping_Cart
+
+	chooseShipment := rep.Conn.First(&shipment, "id = ?", domain.ShipmentID)
+	if chooseShipment.Error != nil {
+		return transactions.TransactionDomain{}, chooseShipment.Error
+	}
+	result := rep.Conn.First(&pns, "id = ?", domain.ID).Table("transactions").Where("id= ?", domain.ID).Updates(map[string]interface{}{"payment_method_id": domain.Payment_MethodID, "shipment_id": domain.ShipmentID})
+	if result.Error != nil {
+		return transactions.TransactionDomain{}, result.Error
+	}
+	chooseSC := rep.Conn.First(&shopping_cart, "id = ?", pns.Payment_MethodID)
+	if chooseSC.Error != nil {
+		return transactions.TransactionDomain{}, chooseSC.Error
+	}
+	resultFinal := rep.Conn.Preload("Shipment").Preload("Payment_Method").First(&pns, "id = ?", domain.ID).Table("transactions").Where("id= ?", domain.ID).Updates(map[string]interface{}{"total_price": shopping_cart.Price + shipment.Shipment_Price})
+	if resultFinal.Error != nil {
+		return transactions.TransactionDomain{}, result.Error
+	}
+	return pns.ToDomain(), nil
+}
+
+func (rep MysqlTransactionRepository) Pay(ctx context.Context, transactionid int, amount float64) (transactions.TransactionDomain, error) {
+	var transaction Transaction
+	chooseTransaction := rep.Conn.First(&transaction, "id = ?", transactionid)
+	if chooseTransaction.Error != nil {
+		return transactions.TransactionDomain{}, chooseTransaction.Error
+	}
+	if transaction.Total_Price == amount {
+		updateStatus := rep.Conn.Preload("Shipment").Preload("Payment_Method").First(&transaction, "id = ?", transactionid).Table("transactions").Where("id = ?", transactionid).Updates(map[string]interface{}{"status": "paid"})
+		if updateStatus.Error != nil {
+			return transactions.TransactionDomain{}, updateStatus.Error
+		}
+	} else {
+		return transactions.TransactionDomain{}, errors.New("invalid payment, please enter number same as total price")
+	}
+	return transaction.ToDomain(), nil
+
 }

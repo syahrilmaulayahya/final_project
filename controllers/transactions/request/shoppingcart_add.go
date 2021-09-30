@@ -3,7 +3,7 @@ package requests
 import "final_project/business/transactions"
 
 type Shopping_CartAdd struct {
-	UserID    int `json:"id"`
+	UserID    int `json:"userid"`
 	ProductID int `json:"productid"`
 	SizeID    int `json:"sizeid"`
 	Quantity  int `json:"quantity"`

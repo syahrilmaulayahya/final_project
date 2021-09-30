@@ -6,12 +6,12 @@ import (
 )
 
 type Shopping_CartResponse struct {
-	ID        int `json:"id"`
-	UserID    int `json:"userid"`
-	ProductID int `json:"productid"`
-	SizeID    int `json:"sizeid"`
-	Quantity  int `json:"quantity"`
-	Price     float64
+	ID        int       `json:"id"`
+	UserID    int       `json:"userid"`
+	ProductID int       `json:"productid"`
+	SizeID    int       `json:"sizeid"`
+	Quantity  int       `json:"quantity"`
+	Price     float64   `json:"price"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
@@ -22,12 +22,25 @@ type Payment_MethodRespons struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 type ShipmentRespons struct {
-	ID             int
-	Name           string
-	Shipment_Type  string
-	Shipment_Price float64
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
+	ID             int       `json:"id"`
+	Name           string    `json:"name"`
+	Shipment_Type  string    `json:"shipment_type"`
+	Shipment_Price float64   `json:"shipment_price"`
+	CreatedAt      time.Time `json:"createdAt"`
+	UpdatedAt      time.Time `json:"updatedAt"`
+}
+type TransactionRespons struct {
+	ID               int         `json:"id"`
+	Status           string      `json:"status"`
+	UserID           int         `json:"userid"`
+	Total_Qty        int         `json:"total_qty"`
+	Total_Price      float64     `json:"total_price"`
+	Payment_MethodID int         `json:"payment_methodId"`
+	Payment_Method   interface{} `json:"payment_method"`
+	ShipmentID       int         `json:"shipmentid"`
+	Shipment         interface{} `json:"shipment"`
+	CreatedAt        time.Time   `json:"createdAt"`
+	UpdatedAt        time.Time   `json:"updatedAt"`
 }
 
 func FromDomain(domain transactions.Shopping_CartDomain) Shopping_CartResponse {
@@ -60,6 +73,21 @@ func ShipmentFromDomain(domain transactions.ShipmentDomain) ShipmentRespons {
 		Shipment_Price: domain.Shipment_Price,
 		CreatedAt:      domain.CreatedAt,
 		UpdatedAt:      domain.UpdatedAt,
+	}
+}
+func TransactionFromDomain(domain transactions.TransactionDomain) TransactionRespons {
+	return TransactionRespons{
+		ID:               domain.ID,
+		Status:           domain.Status,
+		UserID:           domain.UserID,
+		Total_Qty:        domain.Total_Qty,
+		Total_Price:      domain.Total_Price,
+		Payment_MethodID: domain.Payment_MethodID,
+		Payment_Method:   domain.Payment_Method,
+		ShipmentID:       domain.ShipmentID,
+		Shipment:         domain.Shipment,
+		CreatedAt:        domain.CreatedAt,
+		UpdatedAt:        domain.UpdatedAt,
 	}
 }
 func ListFromDomain(data []transactions.Shopping_CartDomain) (result []Shopping_CartResponse) {

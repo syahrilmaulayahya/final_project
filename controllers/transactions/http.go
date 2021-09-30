@@ -88,3 +88,42 @@ func (transactionController TransactionController) GetShipment(c echo.Context) e
 	}
 	return controllers.NewSuccessResponse(c, respons.ListShipmentFromDomain(shipment))
 }
+
+func (transactioncontroller TransactionController) Checkout(c echo.Context) error {
+	checkout := requests.Shopping_CartCheckout{}
+	checkout.ID, _ = strconv.Atoi(c.QueryParam("shopping_cartid"))
+	checkout.UserID = middleware.GetClaimsUserId(c)
+
+	ctx := c.Request().Context()
+	transaction, err := transactioncontroller.TransactionUseCase.Checkout(ctx, checkout.UserID, checkout.ID)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponse(c, respons.TransactionFromDomain(transaction))
+}
+
+func (transactioncontroller TransactionController) ChoosePnS(c echo.Context) error {
+	pns := requests.ChoosePnS{}
+	pns.ID, _ = strconv.Atoi(c.QueryParam("id"))
+	pns.Payment_MethodID, _ = strconv.Atoi(c.QueryParam("payment_methodid"))
+	pns.ShipmentID, _ = strconv.Atoi(c.QueryParam("shipmentid"))
+	ctx := c.Request().Context()
+	transaction, err := transactioncontroller.TransactionUseCase.ChoosePnS(ctx, pns.ToDomain())
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponse(c, respons.TransactionFromDomain(transaction))
+}
+
+func (TransactionController TransactionController) Pay(c echo.Context) error {
+	pay := requests.Payment{}
+	c.Bind(&pay)
+	transactionid, _ := strconv.Atoi(c.QueryParam("transactionid"))
+	ctx := c.Request().Context()
+	result, err := TransactionController.TransactionUseCase.Pay(ctx, transactionid, pay.Total_Price)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponse(c, respons.TransactionFromDomain(result))
+
+}
