@@ -18,11 +18,23 @@ type User struct {
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }
+type Product_description struct {
+	ProductID   int `gorm:"primaryKey, unique"`
+	Description string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+type Product_type struct {
+	ID        int    `gorm:"primaryKey"`
+	Name      string `gorm:"unique"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
 type Product struct {
 	ID             int    `gorm:"primaryKey"`
 	Code           string `gorm:"unique"`
 	Name           string `gorm:"index"`
-	Total_Stock    int
 	Price          float64
 	Picture_url    string
 	CreatedAt      time.Time
@@ -65,7 +77,42 @@ type Shipment struct {
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }
+type Transaction struct {
+	ID               int `gorm:"primaryKey"`
+	Status           string
+	UserID           int
+	Shopping_CartID  int
+	Total_Qty        int
+	Total_Price      float64
+	Payment_MethodID int
+	Payment_Method   Payment_Method
+	ShipmentID       int
+	Shipment         Shipment
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
+}
+type Transaction_Detail struct {
+	UserID         int
+	StatusShipment string
+	TransactionID  int `gorm:"primaryKey"`
+	Transaction    Transaction
+	ProductID      int `gorm:"primaryKey"`
+	Product        Product
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+}
 
+func (transaction_details *Transaction_Detail) ToDomain() transactions.Transaction_DetailDomain {
+	return transactions.Transaction_DetailDomain{
+
+		UserID:         transaction_details.UserID,
+		StatusShipment: transaction_details.StatusShipment,
+		TransactionID:  transaction_details.TransactionID,
+		ProductID:      transaction_details.ProductID,
+		CreatedAt:      transaction_details.CreatedAt,
+		UpdatedAt:      transaction_details.UpdatedAt,
+	}
+}
 func (payment_method *Payment_Method) ToDomain() transactions.Payment_MethodDomain {
 	return transactions.Payment_MethodDomain{
 		ID:        payment_method.ID,
@@ -96,6 +143,22 @@ func (shipment *Shipment) ToDomain() transactions.ShipmentDomain {
 		Shipment_Price: shipment.Shipment_Price,
 		UpdatedAt:      shipment.UpdatedAt,
 		CreatedAt:      shipment.CreatedAt,
+	}
+}
+func (checkout *Transaction) ToDomain() transactions.TransactionDomain {
+	return transactions.TransactionDomain{
+		ID:               checkout.ID,
+		Status:           checkout.Status,
+		UserID:           checkout.UserID,
+		Shopping_CartID:  checkout.Shopping_CartID,
+		Total_Qty:        checkout.Total_Qty,
+		Total_Price:      checkout.Total_Price,
+		Payment_MethodID: checkout.Payment_MethodID,
+		Payment_Method:   checkout.Payment_Method,
+		ShipmentID:       checkout.ShipmentID,
+		Shipment:         checkout.Shipment,
+		CreatedAt:        checkout.CreatedAt,
+		UpdatedAt:        checkout.UpdatedAt,
 	}
 }
 func ListSCToDomain(data []Shopping_Cart) (result []transactions.Shopping_CartDomain) {
