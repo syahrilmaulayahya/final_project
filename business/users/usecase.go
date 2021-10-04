@@ -5,6 +5,7 @@ import (
 	"errors"
 	"final_project/app/middleware"
 	"final_project/helpers"
+	"strings"
 	"time"
 )
 
@@ -22,6 +23,8 @@ func NewUserUseCase(repo Repository, timeOut time.Duration, token middleware.Con
 	}
 }
 func (uc *UserUseCase) Register(ctx context.Context, domain Domain) (Domain, error) {
+	var genderList = []string{"male", "female"}
+	domain.Gender = strings.ToLower(domain.Gender)
 	if domain.Name == "" {
 		return Domain{}, errors.New("name is empty")
 	}
@@ -36,11 +39,25 @@ func (uc *UserUseCase) Register(ctx context.Context, domain Domain) (Domain, err
 	if domain.Phone_number == 0 {
 		return Domain{}, errors.New("phone number is empty")
 	}
-	if domain.Gender == "" {
-		return Domain{}, errors.New("gender is empty")
+	// if domain.Gender == "" {
+	// 	return Domain{}, errors.New("gender is empty")
+	// }
+	for i := 0; i < len(genderList); i++ {
+		if domain.Gender == genderList[i] {
+			break
+		}
+		if i == len(genderList)-1 {
+			if domain.Gender != genderList[i] {
+				return Domain{}, errors.New("invalid gender")
+			}
+		}
 	}
+
 	if domain.Dob.IsZero() {
 		return Domain{}, errors.New("date of birtday is empty")
+	}
+	if domain.Address == "" {
+		return Domain{}, errors.New("address is empty")
 	}
 	user, err := uc.Repo.Register(ctx, domain)
 
@@ -57,6 +74,7 @@ func (uc *UserUseCase) Login(ctx context.Context, email, password string) (Domai
 	if password == "" {
 		return Domain{}, errors.New("password is empty")
 	}
+
 	user, err := uc.Repo.Login(ctx, email, password)
 	var fail error
 	user.Token, fail = uc.JwtToken.GenerateToken(user.ID)

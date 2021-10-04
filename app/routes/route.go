@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"final_project/controllers/admins"
 	"final_project/controllers/products"
 	"final_project/controllers/transactions"
 	"final_project/controllers/users"
@@ -13,13 +14,14 @@ type ControllerList struct {
 	UserController        users.UserController
 	ProductController     products.ProductController
 	TransactionController transactions.TransactionController
+	AdminController       admins.AdminController
 	JWTMiddleware         middleware.JWTConfig
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.POST("users/logins", cl.UserController.Login)
-	e.GET("users/details", cl.UserController.Details, middleware.JWTWithConfig(cl.JWTMiddleware))
+	e.GET("users/details/:id", cl.UserController.Details, middleware.JWTWithConfig(cl.JWTMiddleware))
 	e.POST("users/registers", cl.UserController.Register)
 	e.POST("users/reviews", cl.UserController.UploadReview, middleware.JWTWithConfig(cl.JWTMiddleware))
 
@@ -52,5 +54,9 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	e.GET("transactions/getshipments", cl.TransactionController.GetShipment)
 
 	e.GET("transactions/transactiondetails", cl.TransactionController.GetTransDetail, middleware.JWTWithConfig(cl.JWTMiddleware))
+	e.POST("transactions/transactiondetails/delivered", cl.TransactionController.Delivered, middleware.JWTWithConfig(cl.JWTMiddleware))
+	e.POST("transactions/transactiondetails/canceled", cl.TransactionController.Canceled, middleware.JWTWithConfig(cl.JWTMiddleware))
 
+	e.POST("admins/registers", cl.AdminController.Register)
+	e.POST("admins/logins", cl.AdminController.Login)
 }

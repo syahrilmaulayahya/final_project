@@ -14,6 +14,7 @@ type Domain struct {
 	Phone_number int
 	Gender       string
 	Dob          time.Time
+	Address      string
 	Picture_url  string
 	CreatedAt    time.Time
 	UpdatedAt    time.Time

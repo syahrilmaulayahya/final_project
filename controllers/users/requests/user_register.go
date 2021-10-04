@@ -12,6 +12,7 @@ type UserRegister struct {
 	Phone_number int    `json:"phone_number"`
 	Gender       string `json:"gender"`
 	Dob          string `json:"dob"`
+	Address      string `json:"address"`
 }
 
 func parseDob(dob string) time.Time {
@@ -27,5 +28,6 @@ func (user *UserRegister) ToDomain() users.Domain {
 		Phone_number: user.Phone_number,
 		Gender:       user.Gender,
 		Dob:          parseDob(user.Dob),
+		Address:      user.Address,
 	}
 }

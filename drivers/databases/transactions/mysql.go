@@ -215,3 +215,23 @@ func (rep MysqlTransactionRepository) GetTransDetail(ctx context.Context, userid
 	}
 	return detail.ToDomain(), transaction.ToDomain(), shopping_cart.ToDomain(), nil
 }
+
+func (rep MysqlTransactionRepository) Delivered(ctx context.Context, userid, transid int) (transactions.Transaction_DetailDomain, error) {
+	var status Transaction_Detail
+
+	changeStatus := rep.Conn.First(&status, "user_id = ? AND transaction_id = ?", userid, transid).Table("transaction_details").Where("user_id = ? AND transaction_id = ?", userid, transid).Updates(map[string]interface{}{"status_shipment": "Delivered"})
+	if changeStatus.Error != nil {
+		return transactions.Transaction_DetailDomain{}, changeStatus.Error
+	}
+	return status.ToDomain(), nil
+}
+
+func (rep MysqlTransactionRepository) Canceled(ctx context.Context, userid, transid int) (transactions.Transaction_DetailDomain, error) {
+	var status Transaction_Detail
+
+	changeStatus := rep.Conn.First(&status, "user_id = ? AND transaction_id = ?", userid, transid).Table("transaction_details").Where("user_id = ? AND transaction_id = ?", userid, transid).Updates(map[string]interface{}{"status_shipment": "Canceled"})
+	if changeStatus.Error != nil {
+		return transactions.Transaction_DetailDomain{}, changeStatus.Error
+	}
+	return status.ToDomain(), nil
+}

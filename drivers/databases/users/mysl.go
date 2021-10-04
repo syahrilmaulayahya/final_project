@@ -25,6 +25,7 @@ func (rep MysqlUserRepository) Register(ctx context.Context, domain users.Domain
 	user.Phone_number = domain.Phone_number
 	user.Gender = domain.Gender
 	user.Dob = domain.Dob
+	user.Address = domain.Address
 	result := rep.Conn.Create(&user)
 	if result.Error != nil {
 		return users.Domain{}, result.Error

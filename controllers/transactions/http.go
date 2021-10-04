@@ -138,3 +138,25 @@ func (TransactionController TransactionController) GetTransDetail(c echo.Context
 	}
 	return controllers.NewSuccessResponseDetails(c, respons.DetailFromDomain(detail), respons.TransactionFromDomain(transaction), respons.ShoppingCartFromDomain(shopping))
 }
+
+func (TransactionController TransactionController) Delivered(c echo.Context) error {
+	userid := middleware.GetClaimsUserId(c)
+	transactionid, _ := strconv.Atoi(c.QueryParam("transactionid"))
+	ctx := c.Request().Context()
+	status, err := TransactionController.TransactionUseCase.Delivered(ctx, userid, transactionid)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponse(c, respons.DetailFromDomain(status))
+}
+
+func (TransactionController TransactionController) Canceled(c echo.Context) error {
+	userid := middleware.GetClaimsUserId(c)
+	transactionid, _ := strconv.Atoi(c.QueryParam("transactionid"))
+	ctx := c.Request().Context()
+	status, err := TransactionController.TransactionUseCase.Canceled(ctx, userid, transactionid)
+	if err != nil {
+		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+	}
+	return controllers.NewSuccessResponse(c, respons.DetailFromDomain(status))
+}

@@ -122,3 +122,19 @@ func (uc *TransactionUseCase) GetTransDetail(ctx context.Context, userid, transi
 	}
 	return detail, trans, prod, nil
 }
+
+func (uc *TransactionUseCase) Delivered(ctx context.Context, userid, transid int) (Transaction_DetailDomain, error) {
+	status, err := uc.Repo.Delivered(ctx, userid, transid)
+	if err != nil {
+		return Transaction_DetailDomain{}, err
+	}
+	return status, nil
+}
+
+func (uc *TransactionUseCase) Canceled(ctx context.Context, userid, transid int) (Transaction_DetailDomain, error) {
+	status, err := uc.Repo.Canceled(ctx, userid, transid)
+	if err != nil {
+		return Transaction_DetailDomain{}, err
+	}
+	return status, nil
+}

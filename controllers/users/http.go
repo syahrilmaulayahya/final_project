@@ -7,6 +7,7 @@ import (
 	"final_project/controllers/users/requests"
 	"final_project/controllers/users/respons"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -29,9 +30,9 @@ func (usercontroller UserController) Register(c echo.Context) error {
 	user, err := usercontroller.UserUseCase.Register(ctx, register)
 
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
-	return controllers.NewSuccessResponse(c, respons.FromDomain(user))
+	return controllers.NewSuccessResponse(c, respons.NoTokenFromDomain(user))
 
 }
 func (usercontroller UserController) Login(c echo.Context) error {
@@ -50,11 +51,12 @@ func (usercontroller UserController) Login(c echo.Context) error {
 
 func (UserController UserController) Details(c echo.Context) error {
 	ctx := c.Request().Context()
-	user, err := UserController.UserUseCase.Details(ctx, middleware.GetClaimsUserId(c))
+	id, _ := strconv.Atoi(c.Param("id"))
+	user, err := UserController.UserUseCase.Details(ctx, id)
 	if err != nil {
 		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
 	}
-	return controllers.NewSuccessResponse(c, respons.FromDomain(user))
+	return controllers.NewSuccessResponse(c, respons.NoTokenFromDomain(user))
 }
 
 func (UserController UserController) UploadReview(c echo.Context) error {

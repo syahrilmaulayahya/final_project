@@ -70,6 +70,8 @@ type UseCase interface {
 	Pay(ctx context.Context, transactionid int, amount float64) (TransactionDomain, error)
 
 	GetTransDetail(ctx context.Context, userid, transid int) (Transaction_DetailDomain, TransactionDomain, Shopping_CartDomain, error)
+	Delivered(ctx context.Context, userid, transid int) (Transaction_DetailDomain, error)
+	Canceled(ctx context.Context, userid, transid int) (Transaction_DetailDomain, error)
 }
 type Repository interface {
 	Add(ctx context.Context, domain Shopping_CartDomain) (Shopping_CartDomain, error)
@@ -85,4 +87,6 @@ type Repository interface {
 	Pay(ctx context.Context, transactionid int, amount float64) (TransactionDomain, error)
 
 	GetTransDetail(ctx context.Context, userid, transid int) (Transaction_DetailDomain, TransactionDomain, Shopping_CartDomain, error)
+	Delivered(ctx context.Context, userid, transid int) (Transaction_DetailDomain, error)
+	Canceled(ctx context.Context, userid, transid int) (Transaction_DetailDomain, error)
 }
