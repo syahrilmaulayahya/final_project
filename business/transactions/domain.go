@@ -9,9 +9,9 @@ type Shopping_CartDomain struct {
 	ID        int
 	UserID    int
 	ProductID int
-	Product   interface{}
+	Product   ProductDomain
 	SizeID    int
-	Size      interface{}
+	Size      SizeDomain
 	Quantity  int
 	Price     float64
 	CreatedAt time.Time
@@ -40,9 +40,9 @@ type TransactionDomain struct {
 	Total_Qty        int
 	Total_Price      float64
 	Payment_MethodID int
-	Payment_Method   interface{}
+	Payment_Method   Payment_MethodDomain
 	ShipmentID       int
-	Shipment         interface{}
+	Shipment         ShipmentDomain
 	CreatedAt        time.Time
 	UpdatedAt        time.Time
 }
@@ -53,6 +53,41 @@ type Transaction_DetailDomain struct {
 	ProductID      int
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
+}
+type Product_descriptionDomain struct {
+	ProductID   int
+	Description string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+type Product_typeDomain struct {
+	ID        int
+	Name      string
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+type SizeDomain struct {
+	ID        int
+	ProductID int
+	Type      string
+	Size      string
+	Stock     int
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+type ProductDomain struct {
+	ID                  int
+	Code                string
+	Name                string
+	Price               float64
+	Picture_url         string
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
+	Product_typeID      int
+	Product_type        Product_typeDomain
+	Product_description Product_descriptionDomain
+	Size                SizeDomain
 }
 
 type UseCase interface {

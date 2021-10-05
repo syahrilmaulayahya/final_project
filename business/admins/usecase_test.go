@@ -2,6 +2,7 @@ package admins_test
 
 import (
 	"context"
+	"final_project/app/middleware"
 	"final_project/business/admins"
 	"final_project/business/admins/mocks"
 	"testing"
@@ -14,9 +15,10 @@ import (
 var adminRepository mocks.Repository
 var adminSevice admins.UseCase
 var adminDomain admins.AdminDomain
+var adminToken middleware.ConfigJWT
 
 func setup() {
-	adminSevice = admins.NewAdminUseCase(&adminRepository, time.Hour*1)
+	adminSevice = admins.NewAdminUseCase(&adminRepository, time.Hour*1, adminToken)
 	adminDomain = admins.AdminDomain{
 		ID:       1,
 		Name:     "Syahril",

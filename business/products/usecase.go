@@ -150,7 +150,7 @@ func (uc *ProductUseCase) UpdateSize(ctx context.Context, sizedomain SizeDomain,
 			break
 		}
 		if i == len(typeList)-1 {
-			if sizedomain.Size != sizelist[i] {
+			if sizedomain.Type != typeList[i] {
 				return SizeDomain{}, errors.New("invalid size type")
 			}
 		}

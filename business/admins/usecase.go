@@ -3,6 +3,7 @@ package admins
 import (
 	"context"
 	"errors"
+	"final_project/app/middleware"
 	"final_project/helpers"
 	"time"
 )
@@ -10,12 +11,14 @@ import (
 type AdminUseCase struct {
 	Repo           Repository
 	ContextTimeout time.Duration
+	JwtToken       middleware.ConfigJWT
 }
 
-func NewAdminUseCase(repo Repository, timeOut time.Duration) UseCase {
+func NewAdminUseCase(repo Repository, timeOut time.Duration, token middleware.ConfigJWT) UseCase {
 	return &AdminUseCase{
 		Repo:           repo,
 		ContextTimeout: timeOut,
+		JwtToken:       token,
 	}
 }
 
@@ -46,7 +49,11 @@ func (uc *AdminUseCase) Login(ctx context.Context, email, password string) (Admi
 	}
 
 	admin, err := uc.Repo.Login(ctx, email, password)
-
+	var fail error
+	admin.Token, fail = uc.JwtToken.GenerateToken(admin.ID)
+	if fail != nil {
+		return AdminDomain{}, fail
+	}
 	if err != nil {
 		return AdminDomain{}, err
 	}

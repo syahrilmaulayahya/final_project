@@ -31,17 +31,14 @@ func setup() {
 		Total_Qty:        1,
 		Total_Price:      100000,
 		Payment_MethodID: 1,
-		Payment_Method:   "Payment Method",
-		ShipmentID:       1,
-		Shipment:         "Shipment",
+
+		ShipmentID: 1,
 	}
 	shoppingCartDomain = transactions.Shopping_CartDomain{
 		ID:        1,
 		UserID:    1,
 		ProductID: 1,
-		Product:   "Kemeja",
 		SizeID:    1,
-		Size:      "XL",
 		Quantity:  1,
 		Price:     100000,
 	}

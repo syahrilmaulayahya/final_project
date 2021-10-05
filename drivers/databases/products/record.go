@@ -55,6 +55,44 @@ type Size struct {
 	UpdatedAt time.Time
 }
 
+func (product *Product_type) ToDomain() products.Product_typeDomain {
+	return products.Product_typeDomain{
+		ID:        product.ID,
+		Name:      product.Name,
+		CreatedAt: product.CreatedAt,
+		UpdatedAt: product.UpdatedAt,
+	}
+}
+func (product *Review_Rating) ToDomain() products.Review_RatingDomain {
+	return products.Review_RatingDomain{
+		ID:        product.ID,
+		Review:    product.Review,
+		Rating:    product.Rating,
+		UserID:    product.UserID,
+		ProductID: product.ProductID,
+		CreatedAt: product.CreatedAt,
+		UpdatedAt: product.UpdatedAt,
+	}
+}
+func (Product *Product_description) ToDomain() products.Product_descriptionDomain {
+	return products.Product_descriptionDomain{
+		ProductID:   Product.ProductID,
+		Description: Product.Description,
+		CreatedAt:   Product.CreatedAt,
+		UpdatedAt:   Product.UpdatedAt,
+	}
+}
+func (Product *Size) ToDomain() products.SizeDomain {
+	return products.SizeDomain{
+		ID:        Product.ID,
+		ProductID: Product.ProductID,
+		Type:      Product.Type,
+		Size:      Product.Size,
+		Stock:     Product.Stock,
+		CreatedAt: Product.CreatedAt,
+		UpdatedAt: Product.UpdatedAt,
+	}
+}
 func (product *Product) ToDomain() products.ProductDomain {
 	return products.ProductDomain{
 		ID:                  product.ID,
@@ -65,10 +103,10 @@ func (product *Product) ToDomain() products.ProductDomain {
 		CreatedAt:           product.CreatedAt,
 		UpdatedAt:           product.UpdatedAt,
 		Product_typeID:      product.Product_typeID,
-		Product_type:        product.Product_type,
-		Product_description: product.Product_description,
-		Review_Rating:       product.Review_Rating,
-		Size:                product.Size,
+		Product_type:        product.Product_type.ToDomain(),
+		Product_description: product.Product_description.ToDomain(),
+		Review_Rating:       reviewToListDomain(product.Review_Rating),
+		Size:                sizeToListDomain(product.Size),
 	}
 }
 
@@ -76,6 +114,22 @@ func ToListDomain(data []Product) (result []products.ProductDomain) {
 	result = []products.ProductDomain{}
 	for _, user := range data {
 		result = append(result, user.ToDomain())
+	}
+	return
+}
+
+func sizeToListDomain(data []Size) (result []products.SizeDomain) {
+	result = []products.SizeDomain{}
+	for _, product := range data {
+		result = append(result, product.ToDomain())
+	}
+	return
+}
+
+func reviewToListDomain(data []Review_Rating) (result []products.Review_RatingDomain) {
+	result = []products.Review_RatingDomain{}
+	for _, product := range data {
+		result = append(result, product.ToDomain())
 	}
 	return
 }

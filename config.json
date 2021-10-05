@@ -7,7 +7,7 @@
       "timeout":2
     },
     "database": {
-        "host": "db-ecommerce.cfwwyxjalxvb.us-east-2.rds.amazonaws.com",
+        "host": "localhost",
         "port": "3306",
         "user": "root",
         "pass": "syahril123",
@@ -15,6 +15,7 @@
     },
     "jwt" : {
       "secret" : "syahril123",
+      "admin" : "admin123",
       "expired" : 72
     }
   }

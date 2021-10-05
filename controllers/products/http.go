@@ -27,7 +27,7 @@ func (ProductController ProductController) Get(c echo.Context) error {
 	ctx := c.Request().Context()
 	product, err := ProductController.ProductUseCase.Get(ctx)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusNoContent, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.ListFromDomain(product))
 }
@@ -39,7 +39,7 @@ func (ProductController ProductController) Details(c echo.Context) error {
 	ctx := c.Request().Context()
 	product, err := ProductController.ProductUseCase.Details(ctx, id)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusNoContent, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.FromDomain(product))
 }
@@ -75,7 +75,7 @@ func (ProductController ProductController) UploadProduct(c echo.Context) error {
 	ctx := c.Request().Context()
 	product, err := ProductController.ProductUseCase.UploadProduct(ctx, uploadProduct)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.ProductFromDomain(product))
 }
@@ -86,7 +86,7 @@ func (ProductController ProductController) UpdateProduct(c echo.Context) error {
 	ctx := c.Request().Context()
 	product, err := ProductController.ProductUseCase.UpdateProduct(ctx, updateProduct, newproduct.ID)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.ProductFromDomain(product))
 }
@@ -98,7 +98,7 @@ func (ProductController ProductController) UploadType(c echo.Context) error {
 	ctx := c.Request().Context()
 	productType, err := ProductController.ProductUseCase.UploadType(ctx, uploadType)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.TypeFromDomain(productType))
 
@@ -113,7 +113,7 @@ func (ProductController ProductController) UploadSize(c echo.Context) error {
 	ctx := c.Request().Context()
 	size, err := ProductController.ProductUseCase.UploadSize(ctx, uploadSize)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.SizeFromDomain(size))
 }
@@ -126,7 +126,7 @@ func (ProductController ProductController) UpdateSize(c echo.Context) error {
 	ctx := c.Request().Context()
 	size, err := ProductController.ProductUseCase.UpdateSize(ctx, updateSize, newSize.ID)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.SizeFromDomain(size))
 }
@@ -138,7 +138,7 @@ func (ProductController ProductController) UpdateStock(c echo.Context) error {
 	ctx := c.Request().Context()
 	stock, err := ProductController.ProductUseCase.UpdateStock(ctx, updateStock.Stock, updateStock.ID)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.SizeFromDomain(stock))
 }
@@ -150,7 +150,7 @@ func (ProductController ProductController) UploadDescription(c echo.Context) err
 	ctx := c.Request().Context()
 	description, err := ProductController.ProductUseCase.UploadDescription(ctx, uploadDescription)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.Product_descriptionResponse(description))
 }
@@ -162,7 +162,7 @@ func (ProductController ProductController) UpdateDescription(c echo.Context) err
 	ctx := c.Request().Context()
 	description, err := ProductController.ProductUseCase.UpdateDescription(ctx, updateDescription, updateDescription.ProductID)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.Product_descriptionResponse(description))
 }
