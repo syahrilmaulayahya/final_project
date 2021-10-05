@@ -32,14 +32,17 @@ type Product_type struct {
 	UpdatedAt time.Time
 }
 type Product struct {
-	ID             int    `gorm:"primaryKey"`
-	Code           string `gorm:"unique"`
-	Name           string `gorm:"index"`
-	Price          float64
-	Picture_url    string
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	Product_typeID int
+	ID                  int    `gorm:"primaryKey"`
+	Code                string `gorm:"unique"`
+	Name                string `gorm:"index"`
+	Price               float64
+	Picture_url         string
+	CreatedAt           time.Time
+	UpdatedAt           time.Time
+	Product_typeID      int
+	Product_type        Product_type
+	Product_description Product_description
+	Size                Size
 }
 type Size struct {
 	ID        int `gorm:"primaryKey"`
@@ -126,9 +129,9 @@ func (shopping_cart *Shopping_Cart) ToDomain() transactions.Shopping_CartDomain 
 		ID:        shopping_cart.ID,
 		UserID:    shopping_cart.UserID,
 		ProductID: shopping_cart.ProductID,
-		Product:   shopping_cart.Product,
+		Product:   shopping_cart.Product.ToDomain(),
 		SizeID:    shopping_cart.SizeID,
-		Size:      shopping_cart.Size,
+		Size:      shopping_cart.Size.ToDomain(),
 		Quantity:  shopping_cart.Quantity,
 		Price:     shopping_cart.Price,
 		CreatedAt: shopping_cart.CreatedAt,
@@ -154,9 +157,9 @@ func (checkout *Transaction) ToDomain() transactions.TransactionDomain {
 		Total_Qty:        checkout.Total_Qty,
 		Total_Price:      checkout.Total_Price,
 		Payment_MethodID: checkout.Payment_MethodID,
-		Payment_Method:   checkout.Payment_Method,
+		Payment_Method:   checkout.Payment_Method.ToDomain(),
 		ShipmentID:       checkout.ShipmentID,
-		Shipment:         checkout.Shipment,
+		Shipment:         checkout.Shipment.ToDomain(),
 		CreatedAt:        checkout.CreatedAt,
 		UpdatedAt:        checkout.UpdatedAt,
 	}
@@ -180,4 +183,49 @@ func ListShipmentToDomain(data []Shipment) (result []transactions.ShipmentDomain
 		result = append(result, Shipment.ToDomain())
 	}
 	return
+}
+
+func (product *Product) ToDomain() transactions.ProductDomain {
+	return transactions.ProductDomain{
+		ID:                  product.ID,
+		Code:                product.Code,
+		Name:                product.Name,
+		Price:               product.Price,
+		Picture_url:         product.Picture_url,
+		CreatedAt:           product.CreatedAt,
+		UpdatedAt:           product.UpdatedAt,
+		Product_typeID:      product.Product_typeID,
+		Product_type:        product.Product_type.ToDomain(),
+		Product_description: product.Product_description.ToDomain(),
+		Size:                product.Size.ToDomain(),
+	}
+}
+
+func (product *Product_type) ToDomain() transactions.Product_typeDomain {
+	return transactions.Product_typeDomain{
+		ID:        product.ID,
+		Name:      product.Name,
+		CreatedAt: product.CreatedAt,
+		UpdatedAt: product.UpdatedAt,
+	}
+}
+
+func (Product *Size) ToDomain() transactions.SizeDomain {
+	return transactions.SizeDomain{
+		ID:        Product.ID,
+		ProductID: Product.ProductID,
+		Type:      Product.Type,
+		Size:      Product.Size,
+		Stock:     Product.Stock,
+		CreatedAt: Product.CreatedAt,
+		UpdatedAt: Product.UpdatedAt,
+	}
+}
+func (Product *Product_description) ToDomain() transactions.Product_descriptionDomain {
+	return transactions.Product_descriptionDomain{
+		ProductID:   Product.ProductID,
+		Description: Product.Description,
+		CreatedAt:   Product.CreatedAt,
+		UpdatedAt:   Product.UpdatedAt,
+	}
 }

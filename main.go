@@ -53,6 +53,10 @@ func main() {
 		SecretJWT:       viper.GetString(`jwt.secret`),
 		ExpiresDuration: viper.GetInt(`jwt.expired`),
 	}
+	configJWTAdmin := _middleware.ConfigJWT{
+		SecretJWT:       viper.GetString(`jwt.admin`),
+		ExpiresDuration: viper.GetInt(`jwt.expired`),
+	}
 	Conn := configDB.InitialDB()
 
 	dbMigrate(Conn)
@@ -71,7 +75,7 @@ func main() {
 	transactionController := _transactionController.NewTransactionController(transactionUseCase)
 
 	adminRepository := _adminDB.NewMysqlRepository(Conn)
-	adminUseCase := _adminUseCase.NewAdminUseCase(adminRepository, timeoutContext)
+	adminUseCase := _adminUseCase.NewAdminUseCase(adminRepository, timeoutContext, configJWTAdmin)
 	adminController := _adminController.NewAdminController(adminUseCase)
 	routesInit := routes.ControllerList{
 		UserController:        *userController,
@@ -79,6 +83,7 @@ func main() {
 		TransactionController: *transactionController,
 		AdminController:       *adminController,
 		JWTMiddleware:         configJWT.Init(),
+		JWTAdmin:              configJWTAdmin.Init(),
 	}
 
 	routesInit.RouteRegister(e)

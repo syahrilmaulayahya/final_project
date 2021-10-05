@@ -14,10 +14,10 @@ type ProductDomain struct {
 	CreatedAt           time.Time
 	UpdatedAt           time.Time
 	Product_typeID      int
-	Product_type        interface{}
-	Product_description interface{}
-	Review_Rating       interface{}
-	Size                interface{}
+	Product_type        Product_typeDomain
+	Product_description Product_descriptionDomain
+	Review_Rating       []Review_RatingDomain
+	Size                []SizeDomain
 }
 type Review_RatingDomain struct {
 	ID        int

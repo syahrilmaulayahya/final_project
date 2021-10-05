@@ -16,16 +16,16 @@ type Shopping_CartResponse struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 type Shopping_CartDetailResponse struct {
-	ID        int         `json:"id"`
-	UserID    int         `json:"userid"`
-	ProductID int         `json:"productid"`
-	Product   interface{} `json:"product"`
-	SizeID    int         `json:"sizeid"`
-	Size      interface{} `json:"size"`
-	Quantity  int         `json:"quantity"`
-	Price     float64     `json:"price"`
-	CreatedAt time.Time   `json:"createdAt"`
-	UpdatedAt time.Time   `json:"updatedAt"`
+	ID        int             `json:"id"`
+	UserID    int             `json:"userid"`
+	ProductID int             `json:"productid"`
+	Product   ProductResponse `json:"product"`
+	SizeID    int             `json:"sizeid"`
+	Size      SizeResponse    `json:"size"`
+	Quantity  int             `json:"quantity"`
+	Price     float64         `json:"price"`
+	CreatedAt time.Time       `json:"createdAt"`
+	UpdatedAt time.Time       `json:"updatedAt"`
 }
 type Payment_MethodRespons struct {
 	ID        int       `json:"id"`
@@ -42,18 +42,18 @@ type ShipmentRespons struct {
 	UpdatedAt      time.Time `json:"updatedAt"`
 }
 type TransactionRespons struct {
-	ID               int         `json:"id"`
-	Status           string      `json:"status"`
-	UserID           int         `json:"userid"`
-	ShoppinCartID    int         `json:"shopping_cartID"`
-	Total_Qty        int         `json:"total_qty"`
-	Total_Price      float64     `json:"total_price"`
-	Payment_MethodID int         `json:"payment_methodId"`
-	Payment_Method   interface{} `json:"payment_method"`
-	ShipmentID       int         `json:"shipmentid"`
-	Shipment         interface{} `json:"shipment"`
-	CreatedAt        time.Time   `json:"createdAt"`
-	UpdatedAt        time.Time   `json:"updatedAt"`
+	ID               int                   `json:"id"`
+	Status           string                `json:"status"`
+	UserID           int                   `json:"userid"`
+	ShoppinCartID    int                   `json:"shopping_cartID"`
+	Total_Qty        int                   `json:"total_qty"`
+	Total_Price      float64               `json:"total_price"`
+	Payment_MethodID int                   `json:"payment_methodId"`
+	Payment_Method   Payment_MethodRespons `json:"payment_method"`
+	ShipmentID       int                   `json:"shipmentid"`
+	Shipment         ShipmentRespons       `json:"shipment"`
+	CreatedAt        time.Time             `json:"createdAt"`
+	UpdatedAt        time.Time             `json:"updatedAt"`
 }
 type Transaction_DetailRespons struct {
 	UserID         int       `json:"userid"`
@@ -65,17 +65,35 @@ type Transaction_DetailRespons struct {
 }
 
 type ProductResponse struct {
-	ID                  int         `json:"id"`
-	Code                string      `json:"code"`
-	Name                string      `json:"name"`
-	Price               float64     `json:"price"`
-	Picture_url         string      `json:"picture_url"`
-	CreatedAt           time.Time   `json:"createdAt"`
-	UpdatedAt           time.Time   `json:"updatedAt"`
-	Product_typeID      int         `json:"product_typeid"`
-	Product_type        interface{} `json:"product_type"`
-	Product_description interface{} `json:"product_desription"`
-	Size                interface{} `json:"size"`
+	ID             int       `json:"id"`
+	Code           string    `json:"code"`
+	Name           string    `json:"name"`
+	Price          float64   `json:"price"`
+	Picture_url    string    `json:"picture_url"`
+	CreatedAt      time.Time `json:"createdAt"`
+	UpdatedAt      time.Time `json:"updatedAt"`
+	Product_typeID int       `json:"product_typeid"`
+}
+type SizeResponse struct {
+	ID        int       `json:"id"`
+	ProductID int       `json:"productid"`
+	Type      string    `json:"tipe"`
+	Size      string    `json:"size"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+
+type Product_typeResponse struct {
+	ID        int       `json:"id"`
+	Name      string    `json:"name"`
+	CreatedAt time.Time `json:"createdAt"`
+	UpdatedAt time.Time `json:"updatedAt"`
+}
+type Product_descriptionResponse struct {
+	ProductID   int       `json:"productid"`
+	Description string    `json:"description"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
 func DetailFromDomain(domain transactions.Transaction_DetailDomain) Transaction_DetailRespons {
@@ -108,9 +126,9 @@ func ShoppingCartFromDomain(domain transactions.Shopping_CartDomain) Shopping_Ca
 		ID:        domain.ID,
 		UserID:    domain.UserID,
 		ProductID: domain.ProductID,
-		Product:   domain.Product,
+		Product:   ProductFromDomain(domain.Product),
 		SizeID:    domain.SizeID,
-		Size:      domain.Size,
+		Size:      SizeFromDomain(domain.Size),
 		Quantity:  domain.Quantity,
 		Price:     domain.Price,
 		CreatedAt: domain.CreatedAt,
@@ -146,9 +164,9 @@ func TransactionFromDomain(domain transactions.TransactionDomain) TransactionRes
 		Total_Qty:        domain.Total_Qty,
 		Total_Price:      domain.Total_Price,
 		Payment_MethodID: domain.Payment_MethodID,
-		Payment_Method:   domain.Payment_Method,
+		Payment_Method:   PMFromDomain(domain.Payment_Method),
 		ShipmentID:       domain.ShipmentID,
-		Shipment:         domain.Shipment,
+		Shipment:         ShipmentFromDomain(domain.Shipment),
 		CreatedAt:        domain.CreatedAt,
 		UpdatedAt:        domain.UpdatedAt,
 	}
@@ -169,11 +187,56 @@ func ListPMFromDomain(data []transactions.Payment_MethodDomain) (result []Paymen
 	}
 	return
 }
-
+func ListSCromDomain(data []transactions.Shopping_CartDomain) (result []Shopping_CartDetailResponse) {
+	result = []Shopping_CartDetailResponse{}
+	for _, payment_method := range data {
+		result = append(result, ShoppingCartFromDomain(payment_method))
+	}
+	return
+}
 func ListShipmentFromDomain(data []transactions.ShipmentDomain) (result []ShipmentRespons) {
 	result = []ShipmentRespons{}
 	for _, shipment := range data {
 		result = append(result, ShipmentFromDomain(shipment))
 	}
 	return
+}
+
+func ProductFromDomain(domain transactions.ProductDomain) ProductResponse {
+	return ProductResponse{
+		ID:             domain.ID,
+		Code:           domain.Code,
+		Name:           domain.Name,
+		Price:          domain.Price,
+		Picture_url:    domain.Picture_url,
+		CreatedAt:      domain.CreatedAt,
+		UpdatedAt:      domain.UpdatedAt,
+		Product_typeID: domain.Product_typeID,
+	}
+}
+func TypeFromDomain(domain transactions.Product_typeDomain) Product_typeResponse {
+	return Product_typeResponse{
+		ID:        domain.ID,
+		Name:      domain.Name,
+		CreatedAt: domain.CreatedAt,
+		UpdatedAt: domain.UpdatedAt,
+	}
+}
+func DescriptionFromDomain(domain transactions.Product_descriptionDomain) Product_descriptionResponse {
+	return Product_descriptionResponse{
+		ProductID:   domain.ProductID,
+		Description: domain.Description,
+		CreatedAt:   domain.CreatedAt,
+		UpdatedAt:   domain.UpdatedAt,
+	}
+}
+func SizeFromDomain(domain transactions.SizeDomain) SizeResponse {
+	return SizeResponse{
+		ID:        domain.ID,
+		ProductID: domain.ProductID,
+		Type:      domain.Type,
+		Size:      domain.Size,
+		CreatedAt: domain.CreatedAt,
+		UpdatedAt: domain.UpdatedAt,
+	}
 }

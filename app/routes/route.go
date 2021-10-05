@@ -16,10 +16,12 @@ type ControllerList struct {
 	TransactionController transactions.TransactionController
 	AdminController       admins.AdminController
 	JWTMiddleware         middleware.JWTConfig
+	JWTAdmin              middleware.JWTConfig
 }
 
 func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	e.Pre(middleware.RemoveTrailingSlash())
+
 	e.POST("users/logins", cl.UserController.Login)
 	e.GET("users/details/:id", cl.UserController.Details, middleware.JWTWithConfig(cl.JWTMiddleware))
 	e.POST("users/registers", cl.UserController.Register)
@@ -29,17 +31,17 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	e.GET("products/details/:id", cl.ProductController.Details)
 	e.GET("products/searches", cl.ProductController.Search)
 	e.GET("products/filters", cl.ProductController.FilterByType)
-	e.POST("products/uploads", cl.ProductController.UploadProduct)
-	e.PUT("products/updates", cl.ProductController.UpdateProduct)
+	e.POST("products/uploads", cl.ProductController.UploadProduct, middleware.JWTWithConfig(cl.JWTAdmin))
+	e.PUT("products/updates", cl.ProductController.UpdateProduct, middleware.JWTWithConfig(cl.JWTAdmin))
 
-	e.POST("products/uploadtypes", cl.ProductController.UploadType)
+	e.POST("products/uploadtypes", cl.ProductController.UploadType, middleware.JWTWithConfig(cl.JWTAdmin))
 
-	e.POST("products/uploadsizes", cl.ProductController.UploadSize)
-	e.PUT("products/updatesizes", cl.ProductController.UpdateSize)
-	e.PUT("products/updatestocks", cl.ProductController.UpdateStock)
+	e.POST("products/uploadsizes", cl.ProductController.UploadSize, middleware.JWTWithConfig(cl.JWTAdmin))
+	e.PUT("products/updatesizes", cl.ProductController.UpdateSize, middleware.JWTWithConfig(cl.JWTAdmin))
+	e.PUT("products/updatestocks", cl.ProductController.UpdateStock, middleware.JWTWithConfig(cl.JWTAdmin))
 
-	e.POST("products/uploaddescriptions", cl.ProductController.UploadDescription)
-	e.PUT("products/updatedescriptions", cl.ProductController.UpdateDescription)
+	e.POST("products/uploaddescriptions", cl.ProductController.UploadDescription, middleware.JWTWithConfig(cl.JWTAdmin))
+	e.PUT("products/updatedescriptions", cl.ProductController.UpdateDescription, middleware.JWTWithConfig(cl.JWTAdmin))
 
 	e.POST("transactions/addshoppingcarts", cl.TransactionController.Add, middleware.JWTWithConfig(cl.JWTMiddleware))
 	e.GET("transactions/details", cl.TransactionController.DetailSC, middleware.JWTWithConfig(cl.JWTMiddleware))
@@ -47,10 +49,10 @@ func (cl *ControllerList) RouteRegister(e *echo.Echo) {
 	e.POST("transactions/details/checkouts/pns", cl.TransactionController.ChoosePnS, middleware.JWTWithConfig(cl.JWTMiddleware))
 	e.POST("transactions/details/checkouts/pns/pay", cl.TransactionController.Pay, middleware.JWTWithConfig(cl.JWTMiddleware))
 
-	e.POST("transactions/addpayments", cl.TransactionController.AddPM)
+	e.POST("transactions/addpayments", cl.TransactionController.AddPM, middleware.JWTWithConfig(cl.JWTAdmin))
 	e.GET("transactions/getpayments", cl.TransactionController.GetPM)
 
-	e.POST("transactions/addshipments", cl.TransactionController.AddShipment)
+	e.POST("transactions/addshipments", cl.TransactionController.AddShipment, middleware.JWTWithConfig(cl.JWTAdmin))
 	e.GET("transactions/getshipments", cl.TransactionController.GetShipment)
 
 	e.GET("transactions/transactiondetails", cl.TransactionController.GetTransDetail, middleware.JWTWithConfig(cl.JWTMiddleware))

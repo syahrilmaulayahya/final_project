@@ -44,7 +44,7 @@ func (transactionController TransactionController) DetailSC(c echo.Context) erro
 	if err != nil {
 		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
 	}
-	return controllers.NewSuccessResponse(c, listSC)
+	return controllers.NewSuccessResponse(c, respons.ListSCromDomain(listSC))
 }
 
 func (transactionController TransactionController) AddPM(c echo.Context) error {
