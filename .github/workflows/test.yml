@@ -62,4 +62,4 @@ jobs:
             StrictHostKeyChecking=no
           END
       - name: Connect EC2 and Remove All Container and Pull Registry  
-        run: ssh development 'docker rm -f $(docker ps -a -q) && docker pull moryku/kampus_merdeka:1.0.0 && docker run -d -p 8080:8080 --name kampus_merdeka moryku/kampus_merdeka:1.0.0'
+        run: ssh development 'docker rm -f $(docker ps -a -q) && docker pull syahrilmaulayahya/kampus_merdeka:1.0.0 && docker run -d -p 8080:8080 --name kampus_merdeka syahrilmaulayahya/kampus_merdeka:1.0.0'
