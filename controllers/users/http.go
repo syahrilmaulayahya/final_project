@@ -54,7 +54,7 @@ func (UserController UserController) Details(c echo.Context) error {
 	id, _ := strconv.Atoi(c.Param("id"))
 	user, err := UserController.UserUseCase.Details(ctx, id)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusNoContent, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.NoTokenFromDomain(user))
 }
@@ -66,7 +66,7 @@ func (UserController UserController) UploadReview(c echo.Context) error {
 	ctx := c.Request().Context()
 	review, err := UserController.UserUseCase.UploadReview(ctx, newReview, middleware.GetClaimsUserId(c))
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.ReviewFromDomain(review))
 }

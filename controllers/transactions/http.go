@@ -33,7 +33,7 @@ func (transactioncontroller TransactionController) Add(c echo.Context) error {
 	ctx := c.Request().Context()
 	transaction, err := transactioncontroller.TransactionUseCase.Add(ctx, shopping_cart.ToDomain())
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.FromDomain(transaction))
 }
@@ -42,7 +42,7 @@ func (transactionController TransactionController) DetailSC(c echo.Context) erro
 	ctx := c.Request().Context()
 	listSC, err := transactionController.TransactionUseCase.DetailSC(ctx, middleware.GetClaimsUserId(c))
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusNoContent, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.ListSCromDomain(listSC))
 }
@@ -54,7 +54,7 @@ func (transactionController TransactionController) AddPM(c echo.Context) error {
 	payment_methodAdd := payment_method.ToDomain()
 	newPayment, err := transactionController.TransactionUseCase.AddPM(ctx, payment_methodAdd)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.PMFromDomain(newPayment))
 }
@@ -63,7 +63,7 @@ func (transactionController TransactionController) GetPM(c echo.Context) error {
 	ctx := c.Request().Context()
 	payment, err := transactionController.TransactionUseCase.GetPM(ctx)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusNoContent, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.ListPMFromDomain(payment))
 }
@@ -75,7 +75,7 @@ func (transactionController TransactionController) AddShipment(c echo.Context) e
 	shipmentAdd := shipment.ToDomain()
 	newShipment, err := transactionController.TransactionUseCase.AddShipment(ctx, shipmentAdd)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 	return controllers.NewSuccessResponse(c, newShipment)
 }
@@ -84,7 +84,7 @@ func (transactionController TransactionController) GetShipment(c echo.Context) e
 	ctx := c.Request().Context()
 	shipment, err := transactionController.TransactionUseCase.GetShipment(ctx)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusNoContent, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.ListShipmentFromDomain(shipment))
 }
@@ -122,7 +122,7 @@ func (TransactionController TransactionController) Pay(c echo.Context) error {
 	ctx := c.Request().Context()
 	result, err := TransactionController.TransactionUseCase.Pay(ctx, transactionid, pay.Total_Price)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
 	return controllers.NewSuccessResponse(c, respons.TransactionFromDomain(result))
 
@@ -134,7 +134,7 @@ func (TransactionController TransactionController) GetTransDetail(c echo.Context
 	ctx := c.Request().Context()
 	detail, transaction, shopping, err := TransactionController.TransactionUseCase.GetTransDetail(ctx, userid, transactionid)
 	if err != nil {
-		return controllers.NewErrorResponse(c, http.StatusInternalServerError, err)
+		return controllers.NewErrorResponse(c, http.StatusNoContent, err)
 	}
 	return controllers.NewSuccessResponseDetails(c, respons.DetailFromDomain(detail), respons.TransactionFromDomain(transaction), respons.ShoppingCartFromDomain(shopping))
 }
