@@ -62,6 +62,7 @@ func main() {
 	dbMigrate(Conn)
 	e := echo.New()
 	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
+
 	userRepository := _userDB.NewMysqlRepository(Conn)
 	userUseCase := _userUseCase.NewUserUseCase(userRepository, timeoutContext, configJWT)
 	userController := _userController.NewUserController(userUseCase)

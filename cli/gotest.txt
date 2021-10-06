@@ -1,1 +1,1 @@
-go test ./business/admins -coverprofile=cover.out && go tool cover -html=cover.out
+go test ./business/users -coverprofile=cover.out && go tool cover -html=cover.out

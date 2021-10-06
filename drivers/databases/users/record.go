@@ -57,7 +57,7 @@ type Review_Rating struct {
 	Review    string
 	Rating    float32
 	UserID    int
-	ProductID int `gorm:"unique"`
+	ProductID int
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
