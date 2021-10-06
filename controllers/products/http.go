@@ -134,9 +134,9 @@ func (ProductController ProductController) UpdateSize(c echo.Context) error {
 func (ProductController ProductController) UpdateStock(c echo.Context) error {
 	newStock := requests.StockUpload{}
 	c.Bind(&newStock)
-	updateStock := newStock.ToDomain()
+	// updateStock := newStock.ToDomain()
 	ctx := c.Request().Context()
-	stock, err := ProductController.ProductUseCase.UpdateStock(ctx, updateStock.Stock, updateStock.ID)
+	stock, err := ProductController.ProductUseCase.UpdateStock(ctx, newStock.Stock, newStock.ID)
 	if err != nil {
 		return controllers.NewErrorResponse(c, http.StatusBadRequest, err)
 	}
