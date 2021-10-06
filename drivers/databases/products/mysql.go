@@ -124,7 +124,7 @@ func (rep MysqlProductRepository) UpdateSize(ctx context.Context, sizedomain pro
 func (rep MysqlProductRepository) UpdateStock(ctx context.Context, stock, id int) (products.SizeDomain, error) {
 	var size Size
 	size.Stock = stock
-	result := rep.Conn.First(&size, "id = ?", id).Table("sizes").Where("id= ?", id).Updates(map[string]interface{}{"stock": size.Stock})
+	result := rep.Conn.First(&size, "id = ?", id).Table("sizes").Where("id= ?", id).Updates(map[string]interface{}{"stock": stock})
 	if result.Error != nil {
 		return products.SizeDomain{}, result.Error
 	}
